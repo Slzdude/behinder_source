@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Rsrc-Class-Path: ./ org.eclipse.core.commands_3.9.0.v20170530-1048.jar
+  org.eclipse.core.runtime_3.13.0.v20170207-1030.jar org.eclipse.text_
+ 3.6.100.v20170203-0814.jar swt_win_64.jar swing2swt.jar asm-3.3.1.jar
+  javax.servlet-api-3.1.0.jar jsp-api-2.0.jar servlet-api-2.4.jar json
+ -20180130.jar sqlite-jdbc-3.21.0.jar
+Class-Path: .
+Rsrc-Main-Class: net.rebeyond.behinder.ui.Starter
+Main-Class: org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader
+
