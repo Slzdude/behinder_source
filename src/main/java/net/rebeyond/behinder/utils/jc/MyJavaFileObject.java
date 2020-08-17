@@ -1,5 +1,6 @@
 package net.rebeyond.behinder.utils.jc;
 
+import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,14 +9,14 @@ import java.net.URI;
 
 public class MyJavaFileObject extends SimpleJavaFileObject {
     private ByteArrayOutputStream outPutStream;
-    private String source;
+    private final String source;
 
     public MyJavaFileObject(String name, String source2) {
-        super(URI.create("String:///" + name + Kind.SOURCE.extension), Kind.SOURCE);
+        super(URI.create("String:///" + name + JavaFileObject.Kind.SOURCE.extension), JavaFileObject.Kind.SOURCE);
         this.source = source2;
     }
 
-    public MyJavaFileObject(String name, Kind kind) {
+    public MyJavaFileObject(String name, JavaFileObject.Kind kind) {
         super(URI.create("String:///" + name + kind.extension), kind);
         this.source = null;
     }

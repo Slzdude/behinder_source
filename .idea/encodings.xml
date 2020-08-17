@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
-    <file url="file://$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/ShellManager.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/BasicInfo.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/src/test/java/OpSqliteDB.java" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

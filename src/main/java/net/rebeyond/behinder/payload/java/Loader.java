@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +31,9 @@ public class Loader {
         Map<String, String> result = new HashMap<>();
         try {
             URL url = new File(libPath).toURI().toURL();
-            URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
             Method add = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             add.setAccessible(true);
-            add.invoke(urlClassLoader, url);
+            add.invoke(ClassLoader.getSystemClassLoader(), url);
             result.put("status", "success");
         } catch (Exception e) {
             result.put("status", "fail");
@@ -54,8 +54,9 @@ public class Loader {
     private String buildJsonArray(List<Map<String, String>> list, boolean encode) throws Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for (Map<String, String> entity : list) {
-            sb.append(buildJson(entity, encode) + ",");
+        Iterator<Map<String, String>> it = list.iterator();
+        while (it.hasNext()) {
+            sb.append(buildJson(it.next(), encode) + ",");
         }
         if (sb.toString().endsWith(",")) {
             sb.setLength(sb.length() - 1);
@@ -76,11 +77,11 @@ public class Loader {
                     getClass();
                     Class Base64 = Class.forName("java.util.Base64");
                     Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
-                    value = (String) Encoder.getClass().getMethod("encodeToString", new Class[]{byte[].class}).invoke(Encoder, new Object[]{value.getBytes(StandardCharsets.UTF_8)});
+                    value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
                     getClass();
                     Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", new Class[]{byte[].class}).invoke(Encoder2, new Object[]{value.getBytes(StandardCharsets.UTF_8)})).replace("\n", "").replace("\r", "");
+                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
                 }
             }
             sb.append(value);

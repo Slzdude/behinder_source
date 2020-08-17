@@ -25,7 +25,7 @@ public class Decrypt {
     public static byte[] EncryptForPhp(byte[] bs, String key) throws Exception {
         SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(1, skeySpec, new IvParameterSpec(new byte[16]));
+        cipher.init(1, skeySpec, new IvParameterSpec(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
         return cipher.doFinal(bs);
     }
 

@@ -53,13 +53,13 @@ public class CustomJavaFileObject implements JavaFileObject {
         throw new UnsupportedOperationException();
     }
 
-    public Kind getKind() {
-        return Kind.CLASS;
+    public JavaFileObject.Kind getKind() {
+        return JavaFileObject.Kind.CLASS;
     }
 
-    public boolean isNameCompatible(String simpleName, Kind kind) {
+    public boolean isNameCompatible(String simpleName, JavaFileObject.Kind kind) {
         String baseName = simpleName + kind.extension;
-        return kind.equals(getKind()) && (baseName.equals(getName()) || getName().endsWith("/" + baseName));
+        return kind.equals(getKind()) && (baseName.equals(getName()) || getName().endsWith(new StringBuilder().append("/").append(baseName).toString()));
     }
 
     public NestingKind getNestingKind() {

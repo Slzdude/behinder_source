@@ -2,10 +2,9 @@ package net.rebeyond.behinder.utils.jc;
 
 import javax.tools.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +14,6 @@ public class Run {
     }
 
     public void test() {
-        String str = "\r\nimport javax.servlet.jsp.PageContext;\r\nimport javax.servlet.ServletOutputStream;\r\npublic class test\r\n{\r\n\tpublic boolean equals(Object obj){\r\n\r\n\tPageContext page = (PageContext) obj;\r\n\t\t\ttry {\r\n\t\t\t\tServletOutputStream so=page.getResponse().getOutputStream();\r\n\t\t\t\tso.write(\"afsddf\".getBytes(\"UTF-8\"));\r\n\t\t\t\tso.flush();\r\n\t\t\t\tso.close();\r\n\t\t\t\tpage.getOut().clear();  \r\n\t\t\t} catch (Exception e) {\r\n\t\t\t\t// TODO Auto-generated catch block\r\n\t\t\t\te.printStackTrace();\r\n\t\t\t} \r\n\t\treturn true;\r\n}\r\n}";
         while (true) {
             try {
                 Thread.sleep(2000);
@@ -32,7 +30,7 @@ public class Run {
             String cls = matcher.group(1);
             JavaCompiler jc = ToolProvider.getSystemJavaCompiler();
             if (jc == null) {
-                throw new Exception("±¾µØ»úÆ÷ÉÏÃ»ÓĞÕÒµ½±àÒë»·¾³£¬ÇëÈ·ÈÏ:1.ÊÇ·ñ°²×°ÁËJDK»·¾³;2." + System.getProperty("java.home") + File.separator + "libÄ¿Â¼ÏÂÊÇ·ñÓĞtools.jar.");
+                throw new Exception("æœ¬åœ°æœºå™¨ä¸Šæ²¡æœ‰æ‰¾åˆ°ç¼–è¯‘ç¯å¢ƒï¼Œè¯·ç¡®è®¤:1.æ˜¯å¦å®‰è£…äº†JDKç¯å¢ƒ;2." + System.getProperty("java.home") + File.separator + "libç›®å½•ä¸‹æ˜¯å¦æœ‰tools.jar.");
             }
             JavaFileManager fileManager = new CustomClassloaderJavaFileManager(Run.class.getClassLoader(), jc.getStandardFileManager(null, null, null));
             JavaFileObject javaFileObject = new MyJavaFileObject(cls, sourceCode);
@@ -43,9 +41,9 @@ public class Run {
             options.add("1.6");
             DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
             if (!jc.getTask(null, fileManager, collector, options, null, Arrays.asList(javaFileObject)).call().booleanValue()) {
-                Iterator it = collector.getDiagnostics().iterator();
+                Iterator<Diagnostic<? extends JavaFileObject>> it = collector.getDiagnostics().iterator();
                 if (it.hasNext()) {
-                    throw new Exception(((Diagnostic) it.next()).getMessage(null));
+                    throw new Exception(it.next().getMessage(null));
                 }
             }
             JavaFileObject fileObject = CustomClassloaderJavaFileManager.fileObjects.get(cls);

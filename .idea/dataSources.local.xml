@@ -3,7 +3,13 @@
   <component name="dataSourceStorageLocal">
     <data-source name="data" uuid="0a3e286f-9de8-49f2-a081-7e95e7708d50">
       <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" exact-version="0" />
-      <auth-required>false</auth-required>
+      <auth-provider>no-auth</auth-provider>
+      <schema-mapping />
+    </data-source>
+    <data-source name="data [2]" uuid="0fa3d366-59d5-4da7-a143-d9870228f19d">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" exact-version="0" />
+      <auth-provider>no-auth</auth-provider>
+      <schema-mapping />
     </data-source>
   </component>
 </project>

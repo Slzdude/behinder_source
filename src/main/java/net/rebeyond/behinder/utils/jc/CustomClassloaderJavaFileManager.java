@@ -1,7 +1,6 @@
 package net.rebeyond.behinder.utils.jc;
 
 import javax.tools.*;
-import javax.tools.JavaFileObject.Kind;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -21,11 +20,11 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
         this.finder = new PackageInternalsFinder(classLoader2);
     }
 
-    public ClassLoader getClassLoader(Location location) {
+    public ClassLoader getClassLoader(JavaFileManager.Location location) {
         return this.standardFileManager.getClassLoader(location);
     }
 
-    public String inferBinaryName(Location location, JavaFileObject file) {
+    public String inferBinaryName(JavaFileManager.Location location, JavaFileObject file) {
         if (file instanceof CustomJavaFileObject) {
             return ((CustomJavaFileObject) file).binaryName();
         }
@@ -40,11 +39,11 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
         return this.standardFileManager.handleOption(current, remaining);
     }
 
-    public boolean hasLocation(Location location) {
+    public boolean hasLocation(JavaFileManager.Location location) {
         return location == StandardLocation.CLASS_PATH || location == StandardLocation.PLATFORM_CLASS_PATH;
     }
 
-    public JavaFileObject getJavaFileForInput(Location location, String className, Kind kind) throws IOException {
+    public JavaFileObject getJavaFileForInput(JavaFileManager.Location location, String className, JavaFileObject.Kind kind) throws IOException {
         JavaFileObject javaFileObject = fileObjects.get(className);
         if (javaFileObject == null) {
             this.standardFileManager.getJavaFileForInput(location, className, kind);
@@ -52,17 +51,17 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
         return javaFileObject;
     }
 
-    public JavaFileObject getJavaFileForOutput(Location location, String className, Kind kind, FileObject sibling) throws IOException {
+    public JavaFileObject getJavaFileForOutput(JavaFileManager.Location location, String className, JavaFileObject.Kind kind, FileObject sibling) throws IOException {
         JavaFileObject javaFileObject = new MyJavaFileObject(className, kind);
         fileObjects.put(className, javaFileObject);
         return javaFileObject;
     }
 
-    public FileObject getFileForInput(Location location, String packageName, String relativeName) throws IOException {
+    public FileObject getFileForInput(JavaFileManager.Location location, String packageName, String relativeName) throws IOException {
         return this.standardFileManager.getFileForInput(location, packageName, relativeName);
     }
 
-    public FileObject getFileForOutput(Location location, String packageName, String relativeName, FileObject sibling) throws IOException {
+    public FileObject getFileForOutput(JavaFileManager.Location location, String packageName, String relativeName, FileObject sibling) throws IOException {
         return this.standardFileManager.getFileForOutput(location, packageName, relativeName, sibling);
     }
 
@@ -74,11 +73,11 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
         this.standardFileManager.close();
     }
 
-    public Iterable<JavaFileObject> list(Location location, String packageName, Set<Kind> kinds, boolean recurse) throws IOException {
+    public Iterable<JavaFileObject> list(JavaFileManager.Location location, String packageName, Set<JavaFileObject.Kind> kinds, boolean recurse) throws IOException {
         if (location == StandardLocation.PLATFORM_CLASS_PATH) {
             return this.standardFileManager.list(location, packageName, kinds, recurse);
         }
-        if (location != StandardLocation.CLASS_PATH || !kinds.contains(Kind.CLASS)) {
+        if (location != StandardLocation.CLASS_PATH || !kinds.contains(JavaFileObject.Kind.CLASS)) {
             return Collections.emptyList();
         }
         if (packageName.startsWith("java.")) {

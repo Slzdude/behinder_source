@@ -14,7 +14,7 @@ import java.util.jar.JarEntry;
 
 public class PackageInternalsFinder {
     private static final String CLASS_FILE_EXTENSION = ".class";
-    private ClassLoader classLoader;
+    private final ClassLoader classLoader;
 
     public PackageInternalsFinder(ClassLoader classLoader2) {
         this.classLoader = classLoader2;
@@ -83,9 +83,9 @@ public class PackageInternalsFinder {
     }
 
     private List<JavaFileObject> processDir(String packageName, File directory) {
-        File[] childFiles;
         List<JavaFileObject> result = new ArrayList<>();
-        for (File childFile : directory.listFiles()) {
+        File[] childFiles = directory.listFiles();
+        for (File childFile : childFiles) {
             if (childFile.isFile() && childFile.getName().endsWith(CLASS_FILE_EXTENSION)) {
                 result.add(new CustomJavaFileObject((packageName + "." + childFile.getName()).replaceAll(".class$", ""), childFile.toURI()));
             }

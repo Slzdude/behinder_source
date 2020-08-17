@@ -1,5 +1,7 @@
 package net.rebeyond.behinder.utils;
 
+import org.objectweb.asm.Opcodes;
+
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,14 +14,6 @@ import java.security.spec.RSAPublicKeySpec;
 
 public class CipherUtils {
     public static final String TAG = "CipherUtils";
-
-    static class DecodeHexStrException extends Exception {
-        private static final long serialVersionUID = 938776570614030665L;
-
-        DecodeHexStrException(String string) {
-            super(string);
-        }
-    }
 
     static byte[] RSA_OAEPPaddingPublicKeyEncrpt(byte[] data, PublicKey publicKey) {
         if (data == null || publicKey == null) {
@@ -140,11 +134,10 @@ public class CipherUtils {
         if (data == null || data.length == 0) {
             return "";
         }
-        String hexStr = "0123456789ABCDEF";
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
-            builder.append(hexStr.charAt((data[i] & 240) >>> 4));
-            builder.append(hexStr.charAt(data[i] & 15));
+            builder.append("0123456789ABCDEF".charAt((data[i] & 240) >>> 4));
+            builder.append("0123456789ABCDEF".charAt(data[i] & 15));
         }
         return builder.toString();
     }
@@ -172,7 +165,6 @@ public class CipherUtils {
                         i = i2 + 1;
                         j++;
                     }
-                    byte[] bArr = result;
                     return result;
                 }
             } catch (Exception e) {
@@ -209,8 +201,16 @@ public class CipherUtils {
         return result;
     }
 
+    static class DecodeHexStrException extends Exception {
+        private static final long serialVersionUID = 938776570614030665L;
+
+        DecodeHexStrException(String string) {
+            super(string);
+        }
+    }
+
     public static String sha256Hex(InputStream is) {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[Opcodes.ACC_ABSTRACT];
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             while (true) {

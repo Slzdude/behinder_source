@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Rsrc-Class-Path: ./
-Class-Path: .
-Rsrc-Main-Class: net.rebeyond.behinder.ui.Starter
-Main-Class: org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader
-

