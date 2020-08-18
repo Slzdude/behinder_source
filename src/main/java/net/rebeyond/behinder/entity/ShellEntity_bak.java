@@ -3,121 +3,124 @@ package net.rebeyond.behinder.entity;
 import java.sql.Timestamp;
 
 public class ShellEntity_bak {
-    private Timestamp accessTime;
-    private Timestamp addTime;
-    private String catagory;
-    private String comment;
-    private String headers;
     private String id;
+    private String catagory;
+    private String url;
     private String ip;
-    private String memo;
-    private String os;
     private String password;
     private String type;
+    private String headers;
+    private String os;
+    private String comment;
+    private String memo;
+    private Timestamp addTime;
     private Timestamp updateTime;
-    private String url;
+    private Timestamp accessTime;
+
+    public ShellEntity_bak() {
+    }
 
     public String getId() {
         return this.id;
     }
 
-    public void setId(String id2) {
-        this.id = id2;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCatagory() {
         return this.catagory;
     }
 
-    public void setCatagory(String catagory2) {
-        this.catagory = catagory2;
+    public void setCatagory(String catagory) {
+        this.catagory = catagory;
     }
 
     public String getUrl() {
         return this.url;
     }
 
-    public void setUrl(String url2) {
-        this.url = url2;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getPassword() {
         return this.password;
     }
 
-    public void setPassword(String password2) {
-        this.password = password2;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getType() {
         return this.type;
     }
 
-    public void setType(String type2) {
-        this.type = type2;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getHeaders() {
         return this.headers;
     }
 
-    public void setHeaders(String headers2) {
-        this.headers = headers2;
+    public void setHeaders(String headers) {
+        this.headers = headers;
     }
 
     public String getOs() {
         return this.os;
     }
 
-    public void setOs(String os2) {
-        this.os = os2;
+    public void setOs(String os) {
+        this.os = os;
     }
 
     public String getComment() {
         return this.comment;
     }
 
-    public void setComment(String comment2) {
-        this.comment = comment2;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getMemo() {
         return this.memo;
     }
 
-    public void setMemo(String memo2) {
-        this.memo = memo2;
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     public Timestamp getAddTime() {
         return this.addTime;
     }
 
-    public void setAddTime(Timestamp addTime2) {
-        this.addTime = addTime2;
+    public void setAddTime(Timestamp addTime) {
+        this.addTime = addTime;
     }
 
     public Timestamp getUpdateTime() {
         return this.updateTime;
     }
 
-    public void setUpdateTime(Timestamp updateTime2) {
-        this.updateTime = updateTime2;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Timestamp getAccessTime() {
         return this.accessTime;
     }
 
-    public void setAccessTime(Timestamp accessTime2) {
-        this.accessTime = accessTime2;
+    public void setAccessTime(Timestamp accessTime) {
+        this.accessTime = accessTime;
     }
 
     public String getIp() {
         return this.ip;
     }
 
-    public void setIp(String ip2) {
-        this.ip = ip2;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }

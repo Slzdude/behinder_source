@@ -8,13 +8,13 @@ import java.net.URI;
 
 public class CustomJavaFileObject implements JavaFileObject {
     private final String binaryName;
-    private final String name;
     private final URI uri;
+    private final String name;
 
-    public CustomJavaFileObject(String binaryName2, URI uri2) {
-        this.uri = uri2;
-        this.binaryName = binaryName2;
-        this.name = uri2.getPath() == null ? uri2.getSchemeSpecificPart() : uri2.getPath();
+    public CustomJavaFileObject(String binaryName, URI uri) {
+        this.uri = uri;
+        this.binaryName = binaryName;
+        this.name = uri.getPath() == null ? uri.getSchemeSpecificPart() : uri.getPath();
     }
 
     public URI toUri() {
@@ -46,20 +46,20 @@ public class CustomJavaFileObject implements JavaFileObject {
     }
 
     public long getLastModified() {
-        return 0;
+        return 0L;
     }
 
     public boolean delete() {
         throw new UnsupportedOperationException();
     }
 
-    public JavaFileObject.Kind getKind() {
-        return JavaFileObject.Kind.CLASS;
+    public Kind getKind() {
+        return Kind.CLASS;
     }
 
-    public boolean isNameCompatible(String simpleName, JavaFileObject.Kind kind) {
+    public boolean isNameCompatible(String simpleName, Kind kind) {
         String baseName = simpleName + kind.extension;
-        return kind.equals(getKind()) && (baseName.equals(getName()) || getName().endsWith(new StringBuilder().append("/").append(baseName).toString()));
+        return kind.equals(this.getKind()) && (baseName.equals(this.getName()) || this.getName().endsWith("/" + baseName));
     }
 
     public NestingKind getNestingKind() {

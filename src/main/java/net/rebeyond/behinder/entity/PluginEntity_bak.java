@@ -1,28 +1,31 @@
 package net.rebeyond.behinder.entity;
 
 public class PluginEntity_bak {
-    private String comment;
-    private String entryFile;
-    private String icon;
-    private boolean isGetShell;
     private String name;
+    private String entryFile;
     private String scriptType;
     private int type;
+    private boolean isGetShell;
+    private String icon;
+    private String comment;
+
+    public PluginEntity_bak() {
+    }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name2) {
-        this.name = name2;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getScriptType() {
         return this.scriptType;
     }
 
-    public void setScriptType(String scriptType2) {
-        this.scriptType = scriptType2;
+    public void setScriptType(String scriptType) {
+        this.scriptType = scriptType;
     }
 
     public int getType() {
@@ -33,20 +36,20 @@ public class PluginEntity_bak {
         return this.icon;
     }
 
-    public void setIcon(String icon2) {
-        this.icon = icon2;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public void setType(int type2) {
-        this.type = type2;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getEntryFile() {
         return this.entryFile;
     }
 
-    public void setEntryFile(String entryFile2) {
-        this.entryFile = entryFile2;
+    public void setEntryFile(String entryFile) {
+        this.entryFile = entryFile;
     }
 
     public boolean isGetShell() {
@@ -61,7 +64,7 @@ public class PluginEntity_bak {
         return this.comment;
     }
 
-    public void setComment(String comment2) {
-        this.comment = comment2;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

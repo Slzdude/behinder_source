@@ -1,10 +1,14 @@
 # Behinder3.0 Beta2 源码
 
-冰蝎3.0的源码（Decompile &amp; Fixed）
+冰蝎3.0Beta2的源码（Decompile &amp; Fixed）
 
 为了让表哥们用的开心，进行了简单的逆向工程和修复
 
 当然不能忘了支持原作者： [Behinder](https://github.com/rebeyond/Behinder)
+
+## 目前进度
+
+编译修复，暂未进行功能测试，如果有表哥能帮忙进行功能测试，感激不尽
 
 ## 运行截图
 

@@ -1,5 +1,5 @@
 package net.rebeyond.behinder.core;
 
 public interface PluginSubmitCallBack {
-    void onPluginSubmit(String str, String str2);
+    void onPluginSubmit(String var1, String var2);
 }

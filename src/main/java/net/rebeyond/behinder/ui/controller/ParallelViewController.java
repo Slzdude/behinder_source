@@ -12,28 +12,31 @@ import java.util.List;
 
 public class ParallelViewController {
     @FXML
-    private MenuItem addHostBtn;
-    private ShellService currentShellService;
-    @FXML
-    private MenuItem doScanBtn;
-    private ContextMenu hostContextMenu;
-    @FXML
-    private GridPane hostDetailGridPane;
-    @FXML
     private FlowPane hostFlowPane;
     @FXML
-    private GridPane hostListGridPane;
+    private MenuItem addHostBtn;
+    @FXML
+    private MenuItem doScanBtn;
     @FXML
     private RadioButton hostViewRadio;
     @FXML
-    private Button returnListBtn;
-    private ContextMenu serviceContextMenu;
+    private RadioButton serviceViewRadio;
+    @FXML
+    private GridPane hostDetailGridPane;
+    @FXML
+    private GridPane hostListGridPane;
     @FXML
     private FlowPane serviceDetailFlowPane;
     @FXML
-    private RadioButton serviceViewRadio;
-    private JSONObject shellEntity;
+    private Button returnListBtn;
+    private ShellService currentShellService;
     private ShellManager shellManager;
-    private Label statusLabel;
+    private JSONObject shellEntity;
     private List<Thread> workList;
+    private Label statusLabel;
+    private ContextMenu hostContextMenu;
+    private ContextMenu serviceContextMenu;
+
+    public ParallelViewController() {
+    }
 }

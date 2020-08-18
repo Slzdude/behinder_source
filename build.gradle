@@ -21,6 +21,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // https://mvnrepository.com/artifact/javax.servlet.jsp/jsp-api
     compile group: 'javax.servlet.jsp', name: 'jsp-api', version: '2.2'
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     // https://mvnrepository.com/artifact/org.fxmisc.flowless/flowless
     compile group: 'org.fxmisc.flowless', name: 'flowless', version: '0.6.1'
     // https://mvnrepository.com/artifact/org.reactfx/reactfx
@@ -31,6 +33,8 @@ dependencies {
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
     // https://mvnrepository.com/artifact/org.ow2.asm/asm
     compile group: 'org.ow2.asm', name: 'asm', version: '9.0-beta'
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm-util
+    compile group: 'org.ow2.asm', name: 'asm-util', version: '9.0-beta'
 
 }
 

