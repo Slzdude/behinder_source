@@ -65,14 +65,14 @@ public class MainController {
     @FXML
     private Label proxyStatusLabel;
     @FXML
-    private TreeView<String> catagoryTreeView;
+    private TreeView<String> categoryTreeView;
     private ShellManager shellManager;
 
     public MainController() {
         try {
             this.shellManager = new ShellManager();
-        } catch (Exception var2) {
-            System.err.println(var2.getMessage());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
             this.showErrorMessage("错误", "数据库文件丢失");
             System.exit(0);
         }
@@ -86,8 +86,8 @@ public class MainController {
             this.initToolbar();
             this.initBottomBar();
             this.loadProxy();
-        } catch (Exception var2) {
-            var2.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -193,7 +193,7 @@ public class MainController {
                     this.proxyStatusLabel.setText("");
 
                     try {
-                        this.shellManager.updateProxy("default", typeCombo.getSelectionModel().getSelectedItem().toString(), IPText.getText(), PortText.getText(), userNameText.getText(), passwordText.getText(), Constants.PROXY_DISABLE);
+                        this.shellManager.updateProxy("default", typeCombo.getSelectionModel().getSelectedItem(), IPText.getText(), PortText.getText(), userNameText.getText(), passwordText.getText(), Constants.PROXY_DISABLE);
                     } catch (Exception var12) {
                         var12.printStackTrace();
                     }
@@ -201,7 +201,7 @@ public class MainController {
                     inputDialog.getDialogPane().getScene().getWindow().hide();
                 } else {
                     try {
-                        this.shellManager.updateProxy("default", typeCombo.getSelectionModel().getSelectedItem().toString(), IPText.getText(), PortText.getText(), userNameText.getText(), passwordText.getText(), Constants.PROXY_ENABLE);
+                        this.shellManager.updateProxy("default", typeCombo.getSelectionModel().getSelectedItem(), IPText.getText(), PortText.getText(), userNameText.getText(), passwordText.getText(), Constants.PROXY_ENABLE);
                     } catch (Exception var13) {
                         var13.printStackTrace();
                     }
@@ -278,7 +278,7 @@ public class MainController {
 
         for (int i = 0; i < tcs.size(); ++i) {
             int finalI = i;
-            ((TableColumn<List<SimpleStringProperty>, String>) tcs.get(i)).setCellValueFactory((data) -> data.getValue().get(finalI));
+            ((TableColumn<List<SimpleStringProperty>, String>) tcs.get(i)).setCellValueFactory((data) -> ((List<SimpleStringProperty>) data.getValue()).get(finalI));
         }
 
         this.shellListTable.setRowFactory((tv) -> {
@@ -335,15 +335,15 @@ public class MainController {
         ComboBox<String> shellCatagory = new ComboBox<>();
 
         try {
-            JSONArray catagoryArr = this.shellManager.listCatagory();
-            ObservableList<String> catagoryList = FXCollections.observableArrayList();
+            JSONArray categoryArr = this.shellManager.listCatagory();
+            ObservableList<String> categoryList = FXCollections.observableArrayList();
 
-            for (int i = 0; i < catagoryArr.length(); ++i) {
-                JSONObject catagoryObj = catagoryArr.getJSONObject(i);
-                catagoryList.add(catagoryObj.getString("name"));
+            for (int i = 0; i < categoryArr.length(); ++i) {
+                JSONObject categoryObj = categoryArr.getJSONObject(i);
+                categoryList.add(categoryObj.getString("name"));
             }
 
-            shellCatagory.setItems(catagoryList);
+            shellCatagory.setItems(categoryList);
             shellCatagory.getSelectionModel().select(0);
         } catch (Exception var16) {
             var16.printStackTrace();
@@ -398,7 +398,7 @@ public class MainController {
             urlText.setText(shellObj.getString("url"));
             passText.setText(shellObj.getString("password"));
             shellType.setValue(shellObj.getString("type"));
-            shellCatagory.setValue(shellObj.getString("catagory"));
+            shellCatagory.setValue(shellObj.getString("category"));
             header.setText(shellObj.getString("headers"));
             commnet.setText(shellObj.getString("comment"));
         }
@@ -407,16 +407,16 @@ public class MainController {
             String url = urlText.getText().trim();
             String password = passText.getText();
             if (this.checkUrl(url) && this.checkPassword(password)) {
-                String type = shellType.getValue().toString();
-                String catagory = shellCatagory.getValue().toString();
+                String type = shellType.getValue();
+                String category = shellCatagory.getValue();
                 String comment = commnet.getText();
                 String headers = header.getText();
 
                 try {
                     if (shellID == -1) {
-                        this.shellManager.addShell(url, password, type, catagory, comment, headers);
+                        this.shellManager.addShell(url, password, type, category, comment, headers);
                     } else {
-                        this.shellManager.updateShell(shellID, url, password, type, catagory, comment, headers);
+                        this.shellManager.updateShell(shellID, url, password, type, category, comment, headers);
                     }
 
                     this.loadShellList();
@@ -651,14 +651,14 @@ public class MainController {
 
         });
         delCatagoryBtn.setOnAction((event) -> {
-            if (this.catagoryTreeView.getSelectionModel().getSelectedItem() != null) {
+            if (this.categoryTreeView.getSelectionModel().getSelectedItem() != null) {
                 Alert alert = new Alert(AlertType.CONFIRMATION);
                 alert.setHeaderText("");
                 alert.setContentText("请确认是否删除？仅删除分类信息，不会删除该分类下的网站。");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     try {
-                        String cataGoryName = (this.catagoryTreeView.getSelectionModel().getSelectedItem()).getValue().toString();
+                        String cataGoryName = (this.categoryTreeView.getSelectionModel().getSelectedItem()).getValue();
                         if (this.shellManager.deleteCatagory(cataGoryName) > 0) {
                             this.statusLabel.setText("分类删除完成");
                             this.initCatagoryTree();
@@ -671,15 +671,15 @@ public class MainController {
 
             }
         });
-        this.catagoryTreeView.setContextMenu(treeContextMenu);
-        this.catagoryTreeView.setOnMouseClicked((event) -> {
-            TreeItem<String> currentTreeItem = this.catagoryTreeView.getSelectionModel().getSelectedItem();
+        this.categoryTreeView.setContextMenu(treeContextMenu);
+        this.categoryTreeView.setOnMouseClicked((event) -> {
+            TreeItem<String> currentTreeItem = this.categoryTreeView.getSelectionModel().getSelectedItem();
             if (currentTreeItem.isLeaf()) {
-                String catagoryName = currentTreeItem.getValue().toString();
+                String categoryName = currentTreeItem.getValue();
 
                 try {
                     this.shellListTable.getItems().clear();
-                    JSONArray shellList = this.shellManager.findShellByCatagory(catagoryName);
+                    JSONArray shellList = this.shellManager.findShellByCatagory(categoryName);
                     this.fillShellRows(shellList);
                 } catch (Exception var6) {
                     var6.printStackTrace();
@@ -697,17 +697,17 @@ public class MainController {
     }
 
     private void initCatagoryTree() throws Exception {
-        JSONArray catagoryList = this.shellManager.listCatagory();
+        JSONArray categoryList = this.shellManager.listCatagory();
         TreeItem<String> rootItem = new TreeItem<>("分类列表", new ImageView());
 
-        for (int i = 0; i < catagoryList.length(); ++i) {
-            JSONObject catagoryObj = catagoryList.getJSONObject(i);
-            TreeItem<String> treeItem = new TreeItem<>(catagoryObj.getString("name"));
+        for (int i = 0; i < categoryList.length(); ++i) {
+            JSONObject categoryObj = categoryList.getJSONObject(i);
+            TreeItem<String> treeItem = new TreeItem<>(categoryObj.getString("name"));
             rootItem.getChildren().add(treeItem);
         }
 
         rootItem.setExpanded(true);
-        this.catagoryTreeView.setRoot(rootItem);
-        this.catagoryTreeView.getSelectionModel().select(rootItem);
+        this.categoryTreeView.setRoot(rootItem);
+        this.categoryTreeView.getSelectionModel().select(rootItem);
     }
 }

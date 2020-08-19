@@ -65,10 +65,10 @@ public class ShellManager {
         return result;
     }
 
-    public JSONArray findShellByCatagory(String catagoryName) throws Exception {
+    public JSONArray findShellByCatagory(String categoryName) throws Exception {
         JSONArray result = new JSONArray();
-        PreparedStatement statement = connection.prepareStatement("select * from shells where catagory=?");
-        statement.setString(1, catagoryName);
+        PreparedStatement statement = connection.prepareStatement("select * from shells where category=?");
+        statement.setString(1, categoryName);
         ResultSet rs = statement.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
 
@@ -90,7 +90,7 @@ public class ShellManager {
     public JSONArray listCatagory() throws Exception {
         JSONArray result = new JSONArray();
         Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("select * from catagory");
+        ResultSet rs = statement.executeQuery("select * from category");
         ResultSetMetaData rsmd = rs.getMetaData();
 
         while (rs.next()) {
@@ -153,19 +153,19 @@ public class ShellManager {
         return result.length() == 0 ? null : result.getJSONObject(0);
     }
 
-    public int addShell(String url, String password, String type, String catagory, String comment, String headers) throws Exception {
+    public int addShell(String url, String password, String type, String category, String comment, String headers) throws Exception {
         PreparedStatement statement = connection.prepareStatement("select count(*) from shells where url=?");
         statement.setString(1, url);
         int num = statement.executeQuery().getInt(1);
         if (num > 0) {
             throw new Exception("该URL已存在");
         } else {
-            statement = connection.prepareStatement("insert into shells(url,ip,password,type,catagory,os,comment,headers,addtime,updatetime,accesstime) values (?,?,?,?,?,?,?,?,?,?,?)");
+            statement = connection.prepareStatement("insert into shells(url,ip,password,type,category,os,comment,headers,addtime,updatetime,accesstime) values (?,?,?,?,?,?,?,?,?,?,?)");
             statement.setString(1, url);
             statement.setString(2, InetAddress.getByName((new URL(url)).getHost()).getHostAddress());
             statement.setString(3, password);
             statement.setString(4, type);
-            statement.setString(5, catagory);
+            statement.setString(5, category);
             statement.setString(6, "");
             statement.setString(7, comment);
             statement.setString(8, headers);
@@ -178,13 +178,13 @@ public class ShellManager {
     }
 
     public int addCatagory(String name, String comment) throws Exception {
-        PreparedStatement statement = connection.prepareStatement("select count(*) from catagory where name=?");
+        PreparedStatement statement = connection.prepareStatement("select count(*) from category where name=?");
         statement.setString(1, name);
         int num = statement.executeQuery().getInt(1);
         if (num > 0) {
             throw new Exception("该分类已存在");
         } else {
-            statement = connection.prepareStatement("insert into catagory(name,comment) values (?,?)");
+            statement = connection.prepareStatement("insert into category(name,comment) values (?,?)");
             statement.setString(1, name);
             return statement.executeUpdate();
         }
@@ -249,13 +249,13 @@ public class ShellManager {
         }
     }
 
-    public int updateShell(int shellID, String url, String password, String type, String catagory, String comment, String headers) throws Exception {
-        PreparedStatement statement = connection.prepareStatement("update shells set url=?,ip=?,password=?,type=?,catagory=?,comment=?,headers=?,updatetime=? where id=?");
+    public int updateShell(int shellID, String url, String password, String type, String category, String comment, String headers) throws Exception {
+        PreparedStatement statement = connection.prepareStatement("update shells set url=?,ip=?,password=?,type=?,category=?,comment=?,headers=?,updatetime=? where id=?");
         statement.setString(1, url);
         statement.setString(2, InetAddress.getByName((new URL(url)).getHost()).getHostAddress());
         statement.setString(3, password);
         statement.setString(4, type);
-        statement.setString(5, catagory);
+        statement.setString(5, category);
         statement.setString(6, comment);
         statement.setString(7, headers);
         Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -271,7 +271,7 @@ public class ShellManager {
     }
 
     public int deleteCatagory(String cataGoryName) throws Exception {
-        PreparedStatement statement = connection.prepareStatement("delete from catagory where name=?");
+        PreparedStatement statement = connection.prepareStatement("delete from category where name=?");
         statement.setString(1, cataGoryName);
         return statement.executeUpdate();
     }

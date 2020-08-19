@@ -28,7 +28,7 @@
         </TableView>
     </TitledPane>
     <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" text="网站分类" GridPane.rowIndex="1">
-        <TreeView fx:id="catagoryTreeView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+        <TreeView fx:id="categoryTreeView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                   VBox.vgrow="SOMETIMES"/>
 
     </TitledPane>

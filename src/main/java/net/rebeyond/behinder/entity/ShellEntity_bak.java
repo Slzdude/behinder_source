@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class ShellEntity_bak {
     private String id;
-    private String catagory;
+    private String category;
     private String url;
     private String ip;
     private String password;
@@ -29,11 +29,11 @@ public class ShellEntity_bak {
     }
 
     public String getCatagory() {
-        return this.catagory;
+        return this.category;
     }
 
-    public void setCatagory(String catagory) {
-        this.catagory = catagory;
+    public void setCatagory(String category) {
+        this.category = category;
     }
 
     public String getUrl() {
