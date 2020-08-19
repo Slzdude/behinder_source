@@ -28,8 +28,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49fbff3-91e5-4e45-871d-6d3a2c17d07a" name="Default Changelist" comment="修复作者一部分名称问题">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="d49fbff3-91e5-4e45-871d-6d3a2c17d07a" name="Default Changelist" comment="fixup version">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -286,7 +286,7 @@
       <workItem from="1568096241404" duration="90000" />
       <workItem from="1597675358665" duration="4670000" />
       <workItem from="1597686139579" duration="43000" />
-      <workItem from="1597686198647" duration="19529000" />
+      <workItem from="1597686198647" duration="19819000" />
     </task>
     <task id="LOCAL-00001" summary="v3.0">
       <created>1597688058844</created>
@@ -323,7 +323,14 @@
       <option name="project" value="LOCAL" />
       <updated>1597858637518</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fixup version">
+      <created>1597858656244</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1597858656244</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -359,17 +366,18 @@
     <MESSAGE value="自定义Base64工具类以避免编译时的Deprecated提示" />
     <MESSAGE value="Beta4 code sync" />
     <MESSAGE value="修复作者一部分名称问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="修复作者一部分名称问题" />
+    <MESSAGE value="fixup version" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixup version" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597687148544">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1597687148544" />
-    <state x="652" y="320" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1597687998912">
+    <state x="652" y="320" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1597858910058">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="652" y="320" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1597687998912" />
+    <state x="652" y="320" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1597858910058" />
     <state x="765" y="235" key="#com.intellij.ide.util.MemberChooser" timestamp="1597846603377">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
