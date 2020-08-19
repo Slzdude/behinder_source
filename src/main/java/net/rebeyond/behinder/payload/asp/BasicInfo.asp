@@ -152,7 +152,7 @@ Function GetSA()
 	Set SA=RDS(Key)
 	Set GetSA=SA
 End Function
-Sub main()
+Sub main(arrArgs)
 		on error resume next
 		dim i,ws,Sa,sysenv,envlist,envlists,cpunum,cpuinfo,os
 		envlists="SystemRoot$WinDir$ComSpec$TEMP$TMP$NUMBER_OF_PROCESSORS$OS$Os2LibPath$Path$PATHEXT$PROCESSOR_ARCHITECTURE$PROCESSOR_IDENTIFIER$PROCESSOR_LEVEL$PROCESSOR_REVISION"

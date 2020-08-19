@@ -1,6 +1,5 @@
 package net.rebeyond.behinder.ui.controller;
 
-import net.rebeyond.behinder.utils.Base64;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -18,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.util.converter.DefaultStringConverter;
 import net.rebeyond.behinder.core.ShellService;
 import net.rebeyond.behinder.dao.ShellManager;
+import net.rebeyond.behinder.utils.Base64;
 import net.rebeyond.behinder.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -580,8 +580,7 @@ public class FileManagerViewController {
                 this.expandByPath(pathString);
             } else {
                 this.filePathText.setText(pathString);
-                String charset = this.charsetCombo.getValue().equals("自动") ? null : this.charsetCombo.getValue();
-                this.showFile(pathString, charset);
+                this.showFile(pathString, null);
             }
 
         });

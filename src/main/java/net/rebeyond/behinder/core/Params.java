@@ -18,7 +18,8 @@ public class Params {
     }
 
     public static byte[] getParamedClass(String clsName, final Map<String, String> params) throws Exception {
-        ClassReader classReader = new ClassReader(clsName);
+        String clsPath = String.format("net/rebeyond/behinder/payload/java/%s.class", clsName);
+        ClassReader classReader = new ClassReader(Utils.getResourceData(clsPath));
         ClassWriter cw = new ClassWriter(1);
         classReader.accept(new CheckClassAdapter(cw) {
             public FieldVisitor visitField(int arg0, String filedName, String arg2, String arg3, Object arg4) {
@@ -30,16 +31,18 @@ public class Params {
                 }
             }
         }, 0);
-        return cw.toByteArray();
+        byte[] result = cw.toByteArray();
+        result[7] = 50;
+        return result;
     }
 
-    public static byte[] getParamedClassForPlugin(String payloadPath, final Map params) throws Exception {
+    public static byte[] getParamedClassForPlugin(String payloadPath, final Map<String, String> params) throws Exception {
         ClassReader classReader = new ClassReader(Utils.getFileData(payloadPath));
         ClassWriter cw = new ClassWriter(1);
         classReader.accept(new CheckClassAdapter(cw) {
             public FieldVisitor visitField(int arg0, String filedName, String arg2, String arg3, Object arg4) {
                 if (params.containsKey(filedName)) {
-                    String paramValue = (String) params.get(filedName);
+                    String paramValue = params.get(filedName);
                     return super.visitField(arg0, filedName, arg2, arg3, paramValue);
                 } else {
                     return super.visitField(arg0, filedName, arg2, arg3, arg4);

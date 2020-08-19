@@ -324,10 +324,12 @@ public class MainController {
             window.hide();
         });
         alert.setTitle("新增Shell");
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/behinder/resource/logo.jpg"))));
         alert.setHeaderText("");
         TextField urlText = new TextField();
         TextField passText = new TextField();
-        ComboBox<String> shellType = new ComboBox<String>();
+        ComboBox<String> shellType = new ComboBox<>();
         ObservableList<String> typeList = FXCollections.observableArrayList("jsp", "php", "aspx", "asp");
         shellType.setItems(typeList);
         ComboBox<String> shellCatagory = new ComboBox<>();

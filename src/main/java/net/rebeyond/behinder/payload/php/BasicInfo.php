@@ -1,5 +1,5 @@
 error_reporting(0);
-function main() {
+function main($whatever) {
     ob_start(); phpinfo(); $info = ob_get_contents(); ob_end_clean();
     $driveList ="";
     if (stristr(PHP_OS,"windows")||stristr(PHP_OS,"winnt"))

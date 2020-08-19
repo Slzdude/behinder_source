@@ -163,7 +163,7 @@ public class RealCmdViewController {
                 this.statusLabel.setText("请稍后……");
                 Runnable runner = () -> {
                     try {
-                        String result = "";
+                        String result;
                         if (keyEvent.getCode() == KeyCode.ENTER) {
                             keyEvent.consume();
                             this.currentShellService.writeRealCMD(cmd + "\n");
@@ -178,7 +178,6 @@ public class RealCmdViewController {
                                 }
 
                                 result = result.startsWith("\n") ? result : "\n" + result;
-                                result = result.startsWith("\n") ? result.substring(1) : result;
                                 String finalResult = result;
                                 Platform.runLater(() -> {
                                     this.realCmdTextArea.appendText(finalResult);

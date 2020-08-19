@@ -299,7 +299,7 @@ public class DatabaseViewController {
             TablePosition position = (TablePosition) this.dataTable.getSelectionModel().getSelectedCells().get(0);
             int row = position.getRow();
             int column = position.getColumn();
-            String selectedValue = "";
+            String selectedValue;
             if (this.dataTable.getItems().size() > row && ((List) this.dataTable.getItems().get(row)).size() > column) {
                 selectedValue = ((StringProperty) ((List) this.dataTable.getItems().get(row)).get(column)).getValue();
                 Utils.setClipboardString(selectedValue);
@@ -310,7 +310,7 @@ public class DatabaseViewController {
             TablePosition position = (TablePosition) this.dataTable.getSelectionModel().getSelectedCells().get(0);
             int row = position.getRow();
             int column = position.getColumn();
-            String selectedValue = "";
+            String selectedValue;
             int rowSize = this.dataTable.getItems().size();
             int columnSize = ((List) this.dataTable.getItems().get(row)).size();
             if (rowSize > row && columnSize > column) {
@@ -397,7 +397,7 @@ public class DatabaseViewController {
     }
 
     private String formatConnectString(String type) {
-        String result = "%s://%s:njmubios2012@127.0.0.1:%s/%s";
+        String result = "%s://%s:password@127.0.0.1:%s/%s";
         byte var4 = -1;
         switch (type.hashCode()) {
             case -1924994658:

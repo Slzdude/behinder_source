@@ -26,7 +26,7 @@
                 </rowConstraints>
                 <Accordion fx:id="pluginFlowPane">
                     <panes>
-                        <TitledPane animated="false" expanded="true" text="扫描类">
+                        <TitledPane animated="false" text="扫描类">
                             <AnchorPane minHeight="0.0" minWidth="0.0">
                                 <FlowPane AnchorPane.bottomAnchor="0.0"
                                           AnchorPane.leftAnchor="0.0"
@@ -73,8 +73,7 @@
                                     vgrow="SOMETIMES"/>
                 </rowConstraints>
                 <WebView fx:id="pluginWebView" prefHeight="200.0" prefWidth="200.0"/>
-                <GridPane fx:id="pluginDetailGridPane" style="-fx-border-style: groove;"
-                          GridPane.rowIndex="1">
+                <GridPane fx:id="pluginDetailGridPane" GridPane.rowIndex="1">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>

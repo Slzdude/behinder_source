@@ -11,11 +11,10 @@ import org.json.JSONObject;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class TunnelViewController {
@@ -60,6 +59,7 @@ public class TunnelViewController {
     private ShellService currentShellService;
     private JSONObject shellEntity;
     private List<Thread> workList;
+    private List<Thread> localList = new ArrayList<>();
     private Label statusLabel;
     private TunnelViewController.ProxyUtils proxyUtils;
     private ServerSocket localPortMapSocket;
@@ -173,39 +173,35 @@ public class TunnelViewController {
                         ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName(host));
                         serverSocket.setReuseAddress(true);
                         this.localPortMapSocket = serverSocket;
-                        Platform.runLater(() -> {
-                            this.tunnelLogTextarea.appendText("[INFO]正在监听本地端口:" + port + "\n");
-                        });
+                        Platform.runLater(() -> this.tunnelLogTextarea.appendText("[INFO]正在监听本地端口:" + port + "\n"));
 
                         while (true) {
                             Socket socket = serverSocket.accept();
                             String socketHash = Utils.getMD5("" + socket.getInetAddress() + socket.getPort() + "");
                             this.currentShellService.createPortMap(targetIP, targetPort, socketHash);
-                            Platform.runLater(() -> {
-                                this.tunnelLogTextarea.appendText("[INFO]隧道创建成功。\n");
-                            });
+                            Platform.runLater(() -> this.tunnelLogTextarea.appendText("[INFO]隧道创建成功。\n"));
                             Runnable reader = () -> {
                                 while (true) {
                                     try {
                                         byte[] data = this.currentShellService.readPortMapData(targetIP, targetPort, socketHash);
-                                        if (data != null) {
-                                            if (data.length == 0) {
-                                                Thread.sleep(10L);
-                                                continue;
-                                            }
-
-                                            socket.getOutputStream().write(data);
-                                            socket.getOutputStream().flush();
+                                        if (data == null) {
                                             continue;
                                         }
-                                    } catch (Exception var6) {
-                                        var6.printStackTrace();
-                                        Platform.runLater(() -> {
-                                            this.tunnelLogTextarea.appendText("[ERROR]数据读取异常:" + var6.getMessage() + "\n");
-                                        });
-                                        continue;
-                                    }
+                                        if (data.length == 0) {
+                                            Thread.sleep(10L);
+                                            continue;
+                                        }
 
+                                        socket.getOutputStream().write(data);
+                                        socket.getOutputStream().flush();
+                                        continue;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        if (!(e instanceof SocketException)) {
+                                            Platform.runLater(() -> this.tunnelLogTextarea.appendText("[ERROR]数据读取异常:" + e.getMessage() + "\n"));
+                                            continue;
+                                        }
+                                    }
                                     return;
                                 }
                             };
@@ -224,21 +220,15 @@ public class TunnelViewController {
                                         continue;
                                     } catch (Exception var9) {
                                         var9.printStackTrace();
-                                        Platform.runLater(() -> {
-                                            this.tunnelLogTextarea.appendText("[ERROR]数据写入异常:" + var9.getMessage() + "\n");
-                                        });
+                                        Platform.runLater(() -> this.tunnelLogTextarea.appendText("[ERROR]数据写入异常:" + var9.getMessage() + "\n"));
                                     }
 
                                     try {
                                         this.currentShellService.closeLocalPortMap(targetIP, targetPort);
-                                        Platform.runLater(() -> {
-                                            this.tunnelLogTextarea.appendText("[INFO]隧道关闭成功。\n");
-                                        });
+                                        Platform.runLater(() -> this.tunnelLogTextarea.appendText("[INFO]隧道关闭成功。\n"));
                                         socket.close();
                                     } catch (Exception var7) {
-                                        Platform.runLater(() -> {
-                                            this.tunnelLogTextarea.appendText("[ERROR]隧道关闭失败:" + var7.getMessage() + "\n");
-                                        });
+                                        Platform.runLater(() -> this.tunnelLogTextarea.appendText("[ERROR]隧道关闭失败:" + var7.getMessage() + "\n"));
                                         var7.printStackTrace();
                                     }
 
@@ -251,19 +241,19 @@ public class TunnelViewController {
                             Thread writeWorker = new Thread(writer);
                             this.workList.add(writeWorker);
                             writeWorker.start();
-                            readWorker.join();
-                            writeWorker.join();
+                            this.localList.add(readWorker);
+                            this.localList.add(writeWorker);
                         }
                     } catch (Exception var12) {
                     }
                 };
                 Thread worker = new Thread(runner);
                 this.workList.add(worker);
+                this.localList.add(worker);
                 worker.start();
-            } catch (Exception var5) {
-                Platform.runLater(() -> {
-                    this.tunnelLogTextarea.appendText("[ERROR]隧道创建失败:" + var5.getMessage() + "\n");
-                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> this.tunnelLogTextarea.appendText("[ERROR]隧道创建失败:" + e.getMessage() + "\n"));
             }
 
         };
@@ -278,6 +268,13 @@ public class TunnelViewController {
         String targetPort = this.portMapTargetPortText.getText();
         Runnable runner = () -> {
             try {
+                Iterator var3 = this.localList.iterator();
+
+                while (var3.hasNext()) {
+                    Thread thread = (Thread) var3.next();
+                    thread.interrupt();
+                }
+
                 this.currentShellService.closeLocalPortMap(targetIP, targetPort);
                 if (this.localPortMapSocket != null && !this.localPortMapSocket.isClosed()) {
                     try {
@@ -287,13 +284,10 @@ public class TunnelViewController {
                     }
                 }
 
-                Platform.runLater(() -> {
-                    this.tunnelLogTextarea.appendText("[INFO]本地监听端口已关闭。\n");
-                });
+                Platform.runLater(() -> this.tunnelLogTextarea.appendText("[INFO]本地监听端口已关闭。\n"));
             } catch (Exception var5) {
-                Platform.runLater(() -> {
-                    this.tunnelLogTextarea.appendText("[ERROR]隧道关闭失败:" + var5.getMessage() + "\n");
-                });
+                var5.printStackTrace();
+                Platform.runLater(() -> this.tunnelLogTextarea.appendText("[ERROR]隧道关闭失败:" + var5.getMessage() + "\n"));
             }
 
         };
@@ -307,13 +301,9 @@ public class TunnelViewController {
         Runnable runner = () -> {
             try {
                 this.currentShellService.closeRemotePortMap();
-                Platform.runLater(() -> {
-                    this.tunnelLogTextarea.appendText("[INFO]隧道已关闭，远端相关资源已释放。\n");
-                });
+                Platform.runLater(() -> this.tunnelLogTextarea.appendText("[INFO]隧道已关闭，远端相关资源已释放。\n"));
             } catch (Exception var2) {
-                Platform.runLater(() -> {
-                    this.tunnelLogTextarea.appendText("[ERROR]隧道关闭失败:" + var2.getMessage() + "\n");
-                });
+                Platform.runLater(() -> this.tunnelLogTextarea.appendText("[ERROR]隧道关闭失败:" + var2.getMessage() + "\n"));
             }
 
         };
@@ -331,14 +321,10 @@ public class TunnelViewController {
         Runnable runner = () -> {
             try {
                 this.currentShellService.createRemotePortMap(remoteTargetIP, remoteTargetPort, remoteIP, remotePort);
-                Platform.runLater(() -> {
-                    this.tunnelLogTextarea.appendText("[INFO]隧道建立成功，请连接VPS。\n");
-                });
+                Platform.runLater(() -> this.tunnelLogTextarea.appendText("[INFO]隧道建立成功，请连接VPS。\n"));
             } catch (Exception var6) {
                 var6.printStackTrace();
-                Platform.runLater(() -> {
-                    this.tunnelLogTextarea.appendText("[ERROR]隧道建立失败:" + var6.getMessage() + "\n");
-                });
+                Platform.runLater(() -> this.tunnelLogTextarea.appendText("[ERROR]隧道建立失败:" + var6.getMessage() + "\n"));
             }
 
         };
@@ -381,9 +367,7 @@ public class TunnelViewController {
 
         private void log(String type, String log) {
             String logLine = "[" + type + "]" + log + "\n";
-            Platform.runLater(() -> {
-                TunnelViewController.this.tunnelLogTextarea.appendText(logLine);
-            });
+            Platform.runLater(() -> TunnelViewController.this.tunnelLogTextarea.appendText(logLine));
         }
 
         public void shutdown() {

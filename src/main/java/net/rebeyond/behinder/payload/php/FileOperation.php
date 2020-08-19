@@ -32,7 +32,7 @@ function delDir($dir)
     return rmdir($dir);
 }
 
-function main($mode, $path = ".", $content = "", $charset = "",$newpath)
+function main($mode, $path = ".", $content = "", $charset = "",$newpath="")
 {
 	$path=getgbkStr($path);
     $result = array();

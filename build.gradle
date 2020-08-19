@@ -5,7 +5,7 @@ apply plugin: 'application'
 mainClassName = 'net.rebeyond.behinder.ui.Main'
 
 group 'net.rebeyond.behinder'
-version '3.0.0beta1'
+version '3.0.0beta4'
 
 repositories {
     mavenCentral()
@@ -23,10 +23,6 @@ dependencies {
     compile group: 'javax.servlet.jsp', name: 'jsp-api', version: '2.2'
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    // https://mvnrepository.com/artifact/org.fxmisc.flowless/flowless
-    compile group: 'org.fxmisc.flowless', name: 'flowless', version: '0.6.1'
-    // https://mvnrepository.com/artifact/org.reactfx/reactfx
-    compile group: 'org.reactfx', name: 'reactfx', version: '2.0-M5'
     // https://mvnrepository.com/artifact/org.json/json
     compile group: 'org.json', name: 'json', version: '20200518'
     // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc

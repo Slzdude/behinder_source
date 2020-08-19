@@ -28,15 +28,50 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49fbff3-91e5-4e45-871d-6d3a2c17d07a" name="Default Changelist" comment="编译修复，暂未进行功能测试">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Base64.java" afterDir="false" />
+    <list default="true" id="d49fbff3-91e5-4e45-871d-6d3a2c17d07a" name="Default Changelist" comment="自定义Base64工具类以避免编译时的Deprecated提示">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/CmdViewTab.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/UpdateViewTab.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/CmdViewController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/UpdateInfoViewController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Test.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Crypt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Crypt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Decrypt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Decrypt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Constants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Params.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/Params.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/ShellService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/ShellService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/asp/BasicInfo.asp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/asp/BasicInfo.asp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/csharp/BasicInfo.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/csharp/BasicInfo.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/csharp/FileOperation.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/csharp/FileOperation.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/BShell.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/BasicInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/Cmd.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/ConnectBack.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/Database.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/Echo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/FileOperation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/Loader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/NewScan.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/Ping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/Plugin.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/PortMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/RealCMD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/RemoteSocksProxy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/Scan.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/java/SocksProxy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/php/BasicInfo.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/php/BasicInfo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/php/FileOperation.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/php/FileOperation.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/php/PortMap.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/payload/php/PortMap.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/FileManagerViewTab.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/FileManagerViewTab.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/MainWindow.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/MainWindow.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/PluginViewTab.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/PluginViewTab.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/DatabaseViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/DatabaseViewController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/FileManagerViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/FileManagerViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/MainController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/MainWindowController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/MainWindowController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/RealCmdViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/RealCmdViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/TunnelViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui/controller/TunnelViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Base64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Base64.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -137,7 +172,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="D:/tools/SDK" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/build/classes/java/main/net/rebeyond/behinder/ui" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/ui" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -154,14 +189,14 @@
       <recent name="D:\Project\Java\behinder\src\test\java" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Projects\behinder_source\src\main\java\net\rebeyond\behinder\ui" />
+      <recent name="E:\Projects\behinder_source\src\main\java\net\rebeyond\behinder\ui\controller" />
       <recent name="E:\Projects\behinder_source\build\classes\java\main\net\rebeyond\behinder\ui" />
       <recent name="E:\Projects\behinder_source\libs" />
       <recent name="E:\Projects\behinder_source\build\classes\java\main" />
-      <recent name="D:\Project\Java\behinder\src\main\java" />
-      <recent name="D:\Project\Java\behinder" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Decrypt">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Decrypt" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.rebeyond.behinder.core.Decrypt" />
       <module name="behinder.main" />
@@ -294,7 +329,7 @@
       <workItem from="1568096241404" duration="90000" />
       <workItem from="1597675358665" duration="4670000" />
       <workItem from="1597686139579" duration="43000" />
-      <workItem from="1597686198647" duration="13110000" />
+      <workItem from="1597686198647" duration="17199000" />
     </task>
     <task id="LOCAL-00001" summary="v3.0">
       <created>1597688058844</created>
@@ -310,7 +345,14 @@
       <option name="project" value="LOCAL" />
       <updated>1597773532729</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="自定义Base64工具类以避免编译时的Deprecated提示">
+      <created>1597844011455</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1597844011455</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,7 +385,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="v3.0" />
     <MESSAGE value="编译修复，暂未进行功能测试" />
-    <option name="LAST_COMMIT_MESSAGE" value="编译修复，暂未进行功能测试" />
+    <MESSAGE value="自定义Base64工具类以避免编译时的Deprecated提示" />
+    <option name="LAST_COMMIT_MESSAGE" value="自定义Base64工具类以避免编译时的Deprecated提示" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597687148544">
@@ -354,10 +397,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="652" y="320" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1597687998912" />
-    <state x="765" y="235" key="#com.intellij.ide.util.MemberChooser" timestamp="1597843785872">
+    <state x="765" y="235" key="#com.intellij.ide.util.MemberChooser" timestamp="1597846603377">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="235" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1597843785872" />
+    <state x="765" y="235" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1597846603377" />
     <state x="690" y="266" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1597770573878">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -370,22 +413,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="558" y="86" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1597687837215" />
-    <state width="1877" height="254" key="GridCell.Tab.0.bottom" timestamp="1597843580365">
+    <state width="1877" height="254" key="GridCell.Tab.0.bottom" timestamp="1597847967229">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1597843580365" />
-    <state width="1877" height="254" key="GridCell.Tab.0.center" timestamp="1597843580364">
+    <state width="1877" height="254" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1597847967229" />
+    <state width="1877" height="254" key="GridCell.Tab.0.center" timestamp="1597847967229">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1597843580364" />
-    <state width="1877" height="254" key="GridCell.Tab.0.left" timestamp="1597843580364">
+    <state width="1877" height="254" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1597847967229" />
+    <state width="1877" height="254" key="GridCell.Tab.0.left" timestamp="1597847967229">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1597843580364" />
-    <state width="1877" height="254" key="GridCell.Tab.0.right" timestamp="1597843580365">
+    <state width="1877" height="254" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1597847967229" />
+    <state width="1877" height="254" key="GridCell.Tab.0.right" timestamp="1597847967229">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597843580365" />
+    <state width="1877" height="254" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597847967229" />
     <state width="220" height="477" key="HiddenNamespacesPopup" timestamp="1597687905154">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -394,13 +437,13 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1597769124224" />
-    <state x="553" y="147" width="678" height="804" key="find.popup" timestamp="1597843569047">
+    <state x="553" y="147" width="678" height="804" key="find.popup" timestamp="1597847690679">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="553" y="147" width="678" height="804" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597843569047" />
-    <state x="616" y="240" key="run.anything.popup" timestamp="1597759834934">
+    <state x="553" y="147" width="678" height="804" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597847690679" />
+    <state x="616" y="240" key="run.anything.popup" timestamp="1597847688707">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597759834934" />
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597847688707" />
   </component>
 </project>
