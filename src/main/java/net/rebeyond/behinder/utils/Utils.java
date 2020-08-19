@@ -1,6 +1,5 @@
 package net.rebeyond.behinder.utils;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import net.rebeyond.behinder.core.Crypt;
 import net.rebeyond.behinder.core.Params;
 import net.rebeyond.behinder.ui.controller.MainController;
@@ -506,7 +505,7 @@ public class Utils {
         return result;
     }
 
-    public static byte[] getData(String key, int encryptType, String className, Map params, String type, byte[] extraData) throws Exception {
+    public static byte[] getData(String key, int encryptType, String className, Map<String, String> params, String type, byte[] extraData) throws Exception {
         byte[] bincls;
         byte[] encrypedBincls;
         switch (type) {

@@ -14,8 +14,7 @@ public class Decrypt {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(1, skeySpec);
-        byte[] encrypted = cipher.doFinal(bs);
-        return encrypted;
+        return cipher.doFinal(bs);
     }
 
     public static byte[] EncryptForCSharp(byte[] bs, String key) throws Exception {
@@ -24,8 +23,7 @@ public class Decrypt {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(1, skeySpec, iv);
-        byte[] encrypted = cipher.doFinal(bs);
-        return encrypted;
+        return cipher.doFinal(bs);
     }
 
     public static byte[] EncryptForPhp(byte[] bs, String key) throws Exception {
@@ -33,8 +31,7 @@ public class Decrypt {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(1, skeySpec, new IvParameterSpec(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
-        byte[] encrypted = cipher.doFinal(bs);
-        return encrypted;
+        return cipher.doFinal(bs);
     }
 
     public static byte[] EncryptForAsp(byte[] bs, String key) throws Exception {

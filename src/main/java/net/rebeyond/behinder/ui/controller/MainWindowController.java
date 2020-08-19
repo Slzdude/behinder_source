@@ -1,6 +1,6 @@
 package net.rebeyond.behinder.ui.controller;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import net.rebeyond.behinder.utils.Base64;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
