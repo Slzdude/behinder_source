@@ -1,6 +1,6 @@
 # Behinder3.0 Beta4 源码
 
-冰蝎3.0Beta2的源码（Decompile &amp; Fixed）
+冰蝎3.0Beta4的源码（Decompile &amp; Fixed）
 
 为了让表哥们用的开心，进行了简单的逆向工程和修复
 

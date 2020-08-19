@@ -28,10 +28,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d49fbff3-91e5-4e45-871d-6d3a2c17d07a" name="Default Changelist" comment="Beta4 code sync">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/ShellService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/core/ShellService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rebeyond/behinder/utils/Utils.java" afterDir="false" />
+    <list default="true" id="d49fbff3-91e5-4e45-871d-6d3a2c17d07a" name="Default Changelist" comment="修复作者一部分名称问题">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -288,7 +286,7 @@
       <workItem from="1568096241404" duration="90000" />
       <workItem from="1597675358665" duration="4670000" />
       <workItem from="1597686139579" duration="43000" />
-      <workItem from="1597686198647" duration="19161000" />
+      <workItem from="1597686198647" duration="19529000" />
     </task>
     <task id="LOCAL-00001" summary="v3.0">
       <created>1597688058844</created>
@@ -318,7 +316,14 @@
       <option name="project" value="LOCAL" />
       <updated>1597848037461</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="修复作者一部分名称问题">
+      <created>1597858637518</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1597858637518</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -353,7 +358,8 @@
     <MESSAGE value="编译修复，暂未进行功能测试" />
     <MESSAGE value="自定义Base64工具类以避免编译时的Deprecated提示" />
     <MESSAGE value="Beta4 code sync" />
-    <option name="LAST_COMMIT_MESSAGE" value="Beta4 code sync" />
+    <MESSAGE value="修复作者一部分名称问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="修复作者一部分名称问题" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597687148544">
@@ -380,22 +386,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="558" y="86" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1597687837215" />
-    <state width="1877" height="254" key="GridCell.Tab.0.bottom" timestamp="1597848038791">
+    <state width="1877" height="254" key="GridCell.Tab.0.bottom" timestamp="1597858380279">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1597848038791" />
-    <state width="1877" height="254" key="GridCell.Tab.0.center" timestamp="1597848038791">
+    <state width="1877" height="254" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
+    <state width="1877" height="254" key="GridCell.Tab.0.center" timestamp="1597858380279">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1597848038791" />
-    <state width="1877" height="254" key="GridCell.Tab.0.left" timestamp="1597848038791">
+    <state width="1877" height="254" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
+    <state width="1877" height="254" key="GridCell.Tab.0.left" timestamp="1597858380279">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1597848038791" />
-    <state width="1877" height="254" key="GridCell.Tab.0.right" timestamp="1597848038791">
+    <state width="1877" height="254" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
+    <state width="1877" height="254" key="GridCell.Tab.0.right" timestamp="1597858380279">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597848038791" />
+    <state width="1877" height="254" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
     <state width="220" height="477" key="HiddenNamespacesPopup" timestamp="1597687905154">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -404,10 +410,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1597769124224" />
-    <state x="553" y="147" width="678" height="804" key="find.popup" timestamp="1597858012842">
+    <state x="553" y="147" width="678" height="804" key="find.popup" timestamp="1597858553263">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="553" y="147" width="678" height="804" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597858012842" />
+    <state x="553" y="147" width="678" height="804" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597858553263" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1597857194334">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
