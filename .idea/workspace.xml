@@ -23,13 +23,18 @@
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:v2" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d49fbff3-91e5-4e45-871d-6d3a2c17d07a" name="Default Changelist" comment="fixup version">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/initial.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data.db" beforeDir="false" afterPath="$PROJECT_DIR$/data.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,24 +66,7 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="behinder" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="behinder" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="application" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="behinder" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="behinder" type="f1a62948:ProjectNode" />
-                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
               </path>
             </expand>
             <select />
@@ -153,7 +141,7 @@
       <recent name="E:\Projects\behinder_source\build\classes\java\main" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Gradle.behinder_source [buildDependents]">
     <configuration name="Decrypt" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.rebeyond.behinder.core.Decrypt" />
       <module name="behinder.main" />
@@ -180,16 +168,37 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="behinder_source [buildDependents]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="buildDependents" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
     </configuration>
     <configuration name="behinder_source [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -229,39 +238,20 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="behinder_source [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="run" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Gradle.behinder_source [dependencies]" />
-      <item itemvalue="Gradle.behinder_source [run]" />
-      <item itemvalue="Gradle.behinder_source [build]" />
       <item itemvalue="Application.Main" />
       <item itemvalue="Application.Decrypt" />
+      <item itemvalue="Gradle.behinder_source [dependencies]" />
+      <item itemvalue="Gradle.behinder_source [build]" />
+      <item itemvalue="Gradle.behinder_source [buildDependents]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.behinder_source [buildDependents]" />
         <item itemvalue="Application.Decrypt" />
         <item itemvalue="Gradle.behinder_source [build]" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Gradle.behinder_source [dependencies]" />
-        <item itemvalue="Gradle.behinder_source [run]" />
       </list>
     </recent_temporary>
   </component>
@@ -287,6 +277,7 @@
       <workItem from="1597675358665" duration="4670000" />
       <workItem from="1597686139579" duration="43000" />
       <workItem from="1597686198647" duration="19819000" />
+      <workItem from="1598325293833" duration="622000" />
     </task>
     <task id="LOCAL-00001" summary="v3.0">
       <created>1597688058844</created>
@@ -347,7 +338,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="v2" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
@@ -370,10 +361,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="fixup version" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597687148544">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="414" y="204" width="800" height="675" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598325755805">
+      <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1597687148544" />
+    <state x="414" y="204" width="800" height="675" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.28.1920.1052@0.28.1920.1052" timestamp="1598325755805" />
     <state x="652" y="320" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1597858910058">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -394,30 +386,43 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="558" y="86" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1597687837215" />
-    <state width="1877" height="254" key="GridCell.Tab.0.bottom" timestamp="1597858380279">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1870" height="276" key="GridCell.Tab.0.bottom" timestamp="1598325889984">
+      <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1877" height="254" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
-    <state width="1877" height="254" key="GridCell.Tab.0.center" timestamp="1597858380279">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1870" height="276" key="GridCell.Tab.0.bottom/0.28.1920.1052@0.28.1920.1052" timestamp="1598325889984" />
+    <state width="1870" height="276" key="GridCell.Tab.0.center" timestamp="1598325889983">
+      <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1877" height="254" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
-    <state width="1877" height="254" key="GridCell.Tab.0.left" timestamp="1597858380279">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1870" height="276" key="GridCell.Tab.0.center/0.28.1920.1052@0.28.1920.1052" timestamp="1598325889983" />
+    <state width="1870" height="276" key="GridCell.Tab.0.left" timestamp="1598325889983">
+      <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1877" height="254" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
-    <state width="1877" height="254" key="GridCell.Tab.0.right" timestamp="1597858380279">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1870" height="276" key="GridCell.Tab.0.left/0.28.1920.1052@0.28.1920.1052" timestamp="1598325889983" />
+    <state width="1870" height="276" key="GridCell.Tab.0.right" timestamp="1598325889984">
+      <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1877" height="254" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597858380279" />
-    <state width="220" height="477" key="HiddenNamespacesPopup" timestamp="1597687905154">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1870" height="276" key="GridCell.Tab.0.right/0.28.1920.1052@0.28.1920.1052" timestamp="1598325889984" />
+    <state width="252" height="483" key="HiddenNamespacesPopup" timestamp="1598325762601">
+      <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="220" height="477" key="HiddenNamespacesPopup/0.0.1920.1040@0.0.1920.1040" timestamp="1597687905154" />
+    <state width="252" height="483" key="HiddenNamespacesPopup/0.28.1920.1052@0.28.1920.1052" timestamp="1598325762601" />
     <state x="461" y="164" key="SettingsEditor" timestamp="1597769124224">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1597769124224" />
+    <state x="714" y="362" width="481" height="372" key="com.intellij.database.psi.DbRenamePsiElementProcessor.DbRenameDialog" timestamp="1598325855894">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state x="714" y="362" width="481" height="372" key="com.intellij.database.psi.DbRenamePsiElementProcessor.DbRenameDialog/0.28.1920.1052@0.28.1920.1052" timestamp="1598325855894" />
+    <state x="796" y="317" width="521" height="471" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1598325870514">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state x="796" y="317" width="521" height="471" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/0.28.1920.1052@0.28.1920.1052" timestamp="1598325870514" />
     <state x="553" y="147" width="678" height="804" key="find.popup" timestamp="1597858553263">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
