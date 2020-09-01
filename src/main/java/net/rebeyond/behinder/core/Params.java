@@ -18,7 +18,7 @@ public class Params {
     }
 
     public static byte[] getParamedClass(String clsName, final Map<String, String> params) throws Exception {
-        String clsPath = String.format("res/net/rebeyond/behinder/payload/java/%s.class", clsName);
+        String clsPath = String.format("net/rebeyond/behinder/payload/java/%s.class", clsName);
         ClassReader classReader = new ClassReader(Utils.getResourceData(clsPath));
         ClassWriter cw = new ClassWriter(1);
         classReader.accept(new CheckClassAdapter(cw) {
@@ -54,7 +54,7 @@ public class Params {
     }
 
     public static byte[] getParamedAssembly(String clsName, Map<String, String> params) throws Exception {
-        String basePath = "res/net/rebeyond/behinder/payload/csharp/";
+        String basePath = "net/rebeyond/behinder/payload/csharp/";
         String payloadPath = basePath + clsName + ".dll";
         byte[] result = Utils.getResourceData(payloadPath);
         if (params.keySet().size() == 0) {
@@ -74,7 +74,7 @@ public class Params {
     }
 
     public static byte[] getParamedAssemblyClassic(String clsName, Map<String, String> params) throws Exception {
-        String basePath = "res/net/rebeyond/behinder/payload/csharp/";
+        String basePath = "net/rebeyond/behinder/payload/csharp/";
         String payloadPath = basePath + clsName + ".dll";
         ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -104,7 +104,7 @@ public class Params {
     }
 
     public static byte[] getParamedPhp(String clsName, Map<String, String> params) throws Exception {
-        String basePath = "res/net/rebeyond/behinder/payload/php/";
+        String basePath = "net/rebeyond/behinder/payload/php/";
         String payloadPath = basePath + clsName + ".php";
         StringBuilder code = new StringBuilder();
         ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));
@@ -132,7 +132,7 @@ public class Params {
     }
 
     public static byte[] getParamedAsp(String clsName, Map<String, String> params) throws Exception {
-        String basePath = "res/net/rebeyond/behinder/payload/asp/";
+        String basePath = "net/rebeyond/behinder/payload/asp/";
         String payloadPath = basePath + clsName + ".asp";
         StringBuilder code = new StringBuilder();
         ByteArrayInputStream bis = new ByteArrayInputStream(Utils.getResourceData(payloadPath));

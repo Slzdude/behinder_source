@@ -11,7 +11,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         String clsName = "Cmd";
-        String clsPath = String.format("res/net/rebeyond/behinder/payload/java/%s.class", clsName);
+        String clsPath = String.format("net/rebeyond/behinder/payload/java/%s.class", clsName);
         ClassReader classReader = new ClassReader(Utils.getResourceData(clsPath));
         ClassWriter cw = new ClassWriter(1);
         classReader.accept(new CheckClassAdapter(cw) {

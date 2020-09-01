@@ -86,7 +86,7 @@ public class FileManagerViewController {
         String driveList = this.basicInfoMap.get("driveList");
         TreeItem<String> rootItem = new TreeItem<>("文件系统", new ImageView());
         rootItem.getGraphic().setUserData("base");
-        Image icon = new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/drive.png")));
+        Image icon = new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/drive.png")));
         String[] var4 = driveList.split(";");
         int var5 = var4.length;
 
@@ -345,14 +345,14 @@ public class FileManagerViewController {
                     Image icon;
                     if (type.equals("directory")) {
                         try {
-                            icon = new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/folder.png")));
+                            icon = new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/folder.png")));
                             this.setGraphic(new ImageView(icon));
                         } catch (Exception var6) {
                             var6.printStackTrace();
                         }
                     } else if (type.equals("file")) {
                         try {
-                            icon = new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/file.png")));
+                            icon = new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/file.png")));
                             this.setGraphic(new ImageView(icon));
                         } catch (Exception var5) {
                             var5.printStackTrace();
@@ -385,7 +385,7 @@ public class FileManagerViewController {
         Image icon = null;
 
         try {
-            icon = new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/folder.png")));
+            icon = new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/folder.png")));
         } catch (Exception var10) {
             var10.printStackTrace();
         }
@@ -421,7 +421,7 @@ public class FileManagerViewController {
                 String type = new String(Base64.decode(fileObj.getString("type")), StandardCharsets.UTF_8);
                 String name = new String(Base64.decode(fileObj.getString("name")), StandardCharsets.UTF_8);
                 if (!name.equals(".") && !name.equals("..") && type.equals("directory")) {
-                    Image icon = new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/folder.png")));
+                    Image icon = new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/folder.png")));
                     TreeItem<String> treeItem = new TreeItem<>(name, new ImageView(icon));
                     treeItem.getGraphic().setUserData("directory");
                     currentTreeItem.getChildren().add(treeItem);

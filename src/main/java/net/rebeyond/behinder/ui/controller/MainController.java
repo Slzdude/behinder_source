@@ -325,7 +325,7 @@ public class MainController {
         });
         alert.setTitle("新增Shell");
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/logo.jpg"))));
+        stage.getIcons().add(new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/logo.jpg"))));
         alert.setHeaderText("");
         TextField urlText = new TextField();
         TextField passText = new TextField();
@@ -444,7 +444,7 @@ public class MainController {
             mainWindowController.init(this.shellManager.findShell(Integer.parseInt(shellID)), this.shellManager, currentProxy);
             Stage stage = new Stage();
             stage.setTitle(url);
-            stage.getIcons().add(new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/logo.jpg"))));
+            stage.getIcons().add(new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/logo.jpg"))));
             stage.setUserData(url);
             stage.setScene(new Scene(mainWindow));
             stage.setOnCloseRequest((e) -> {
@@ -490,7 +490,7 @@ public class MainController {
                 mainWindowController.init(this.shellManager.findShell(Integer.parseInt(shellID)), this.shellManager, currentProxy);
                 Stage stage = new Stage();
                 stage.setTitle(url);
-                stage.getIcons().add(new Image(new ByteArrayInputStream(Utils.getResourceData("res/net/rebeyond/resource/logo.jpg"))));
+                stage.getIcons().add(new Image(new ByteArrayInputStream(Utils.getResourceData("net/rebeyond/resource/logo.jpg"))));
                 stage.setUserData(url);
                 stage.setScene(new Scene(mainWindow));
                 stage.setOnCloseRequest((e) -> {

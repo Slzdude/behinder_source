@@ -588,7 +588,7 @@ public class DatabaseViewController {
     }
 
     private void loadDriver(String scriptType, String databaseType) throws Exception {
-        String driverPath = "res/net/rebeyond/resource/driver/";
+        String driverPath = "net/rebeyond/resource/driver/";
         Platform.runLater(() -> this.statusLabel.setText("正在上传数据库驱动……"));
         String os = this.currentShellService.shellEntity.getString("os").toLowerCase();
         String remoteDir = os.contains("windows") ? "c:/windows/temp/" : "/tmp/";
@@ -683,15 +683,15 @@ public class DatabaseViewController {
 
         switch (var8) {
             case 0:
-                childIconPath = "res/net/rebeyond/resource/database.png";
+                childIconPath = "net/rebeyond/resource/database.png";
                 childType = "database";
                 break;
             case 1:
-                childIconPath = "res/net/rebeyond/resource/database_table.png";
+                childIconPath = "net/rebeyond/resource/database_table.png";
                 childType = "table";
                 break;
             case 2:
-                childIconPath = "res/net/rebeyond/resource/database_column.png";
+                childIconPath = "net/rebeyond/resource/database_column.png";
                 childType = "column";
         }
 
