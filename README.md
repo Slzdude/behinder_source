@@ -41,5 +41,4 @@ Linux下需要手动安装JavaFX
 # Manjaro/ArchLinux
 sudo pacman -S java8-openjfx
 
-# Debian/
 ```
