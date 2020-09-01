@@ -282,13 +282,15 @@ public class Utils {
             conn.setRequestProperty("Cookie", cookie);
         }
 
-        OutputStream outwritestream = conn.getOutputStream();
-        outwritestream.write(data.getBytes());
-        outwritestream.flush();
-        outwritestream.close();
+        OutputStream outputStream = conn.getOutputStream();
+        outputStream.write(data.getBytes());
+        outputStream.flush();
+        outputStream.close();
         String line;
         if (conn.getResponseCode() == 200) {
-            for (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8)); (line = reader.readLine()) != null; result = result.append(line + "\n")) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+            while ((line = reader.readLine()) != null) {
+                result = result.append(line + "\n");
             }
         }
 
@@ -672,7 +674,7 @@ public class Utils {
         return pluginEntity;
     }
 
-    public static Object json2Obj(JSONObject json, Class target) throws Exception {
+    public static Object json2Obj(JSONObject json, Class<Object> target) throws Exception {
         Object obj = target.newInstance();
 
         for (Field f : target.getDeclaredFields()) {
